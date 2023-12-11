@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -34,4 +38,9 @@ public class Supplier extends BaseEntity{
 
     @Column(name = "note")
     private String note;
+
+    @OneToMany(cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY,
+            mappedBy = "supplier")
+    private Set<WarehouseImport> warehouseImports  = new HashSet<WarehouseImport>();
 }
