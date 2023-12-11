@@ -17,9 +17,8 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CategoryDetailDto {
-    @Nonnull
+    private Long id;
     private String name;
-    @Nullable
     private String description;
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;

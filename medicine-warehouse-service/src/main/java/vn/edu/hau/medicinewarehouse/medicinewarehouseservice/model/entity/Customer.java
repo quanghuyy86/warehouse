@@ -24,12 +24,15 @@ public class Customer extends BaseEntity{
     private String fullName;
 
     @Column(name = "phone")
+    @NotNull(message = "Bắt buộc nhập số điện thoại")
     private String phone;
 
     @Column(name = "email")
+    @NotNull(message = "Bắt buộc nhập email")
     private String email;
 
     @Column(name = "address")
+    @NotNull(message = "Bắt buộc nhập địa chỉ")
     private String address;
 
     @Column(name = "note")
