@@ -10,8 +10,8 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Suppli
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 
 public interface SupplierService extends BaseService<Supplier, Long> {
-    Page<Supplier> getListCustomer(Request request);
-    Supplier createOrUpdateCustomer(SupplierDto customerDto, Long id);
-    SupplierDetailDto getCustomerById(Long id);
-    Boolean deleteCustomerById(Long id);
+    Page<Supplier> getListSupplier(Request request);
+    Supplier createOrUpdateSupplier(SupplierDto customerDto, Long id);
+    SupplierDetailDto getSupplierById(Long id);
+    Boolean deleteSupplierById(Long id);
 }

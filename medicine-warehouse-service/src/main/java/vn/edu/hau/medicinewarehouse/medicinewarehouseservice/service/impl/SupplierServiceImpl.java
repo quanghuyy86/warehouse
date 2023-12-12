@@ -29,14 +29,14 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
     }
 
     @Override
-    public Page<Supplier> getListCustomer(Request request) {
+    public Page<Supplier> getListSupplier(Request request) {
         List<Supplier> list = this.searchSupplierByName(request.getKeyword());
         Pageable pageable = PageRequest.of(request.getPage(), request.getPageSize());
         return new PageImpl<Supplier>(list, pageable, this.searchSupplierByName(request.getKeyword()).size());
     }
 
     @Override
-    public Supplier createOrUpdateCustomer(SupplierDto SupplierDto, Long id) {
+    public Supplier createOrUpdateSupplier(SupplierDto SupplierDto, Long id) {
         if(id != null && id > 0){
             Supplier supplier = this.supplierRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Not found with id = " + id));
             supplier.setFullName(SupplierDto.getFullName());
@@ -57,7 +57,7 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
     }
 
     @Override
-    public SupplierDetailDto getCustomerById(Long id) {
+    public SupplierDetailDto getSupplierById(Long id) {
         Supplier supplier = this.supplierRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found customer with id = " + id));
         SupplierDetailDto supplierDetailDto = new SupplierDetailDto();
         supplierDetailDto.setFullName(supplier.getFullName());
@@ -71,7 +71,7 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
     }
 
     @Override
-    public Boolean deleteCustomerById(Long id) {
+    public Boolean deleteSupplierById(Long id) {
         Supplier supplier = this.supplierRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found customer with id = " + id));
         supplier.setDeleted(true);
         this.supplierRepository.save(supplier);
