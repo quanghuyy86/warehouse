@@ -15,11 +15,10 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.ProductServ
 import java.io.IOException;
 
 @RestController
-public class ProductController extends BaseController<Product, Long>{
+public class ProductController{
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
-        super(productService);
         this.productService = productService;
     }
     @PostMapping("products/")

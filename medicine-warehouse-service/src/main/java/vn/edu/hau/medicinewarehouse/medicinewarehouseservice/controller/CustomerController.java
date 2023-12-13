@@ -11,11 +11,10 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CustomerService;
 
 @RestController
-public class CustomerController extends BaseController<Customer, Long> {
+public class CustomerController{
     private final CustomerService customerService;
 
     public CustomerController(CustomerService customerService) {
-        super(customerService);
         this.customerService = customerService;
     }
 

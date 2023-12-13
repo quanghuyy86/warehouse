@@ -13,10 +13,9 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.SupplierService;
 
 @RestController
-public class SupplierController extends BaseController<Supplier, Long> {
+public class SupplierController{
     private final SupplierService supplierService;
     public SupplierController(SupplierService supplierService) {
-        super(supplierService);
         this.supplierService = supplierService;
     }
 

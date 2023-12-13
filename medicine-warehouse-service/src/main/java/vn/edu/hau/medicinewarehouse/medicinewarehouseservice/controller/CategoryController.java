@@ -13,11 +13,10 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
 @RestController
-public class CategoryController extends BaseController<Category, Long> {
+public class CategoryController {
     private final CategoryService categoryService;
 
     public CategoryController(CategoryService categoryService) {
-        super(categoryService);
         this.categoryService = categoryService;
     }
 
