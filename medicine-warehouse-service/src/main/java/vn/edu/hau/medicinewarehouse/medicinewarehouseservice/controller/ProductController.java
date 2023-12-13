@@ -3,10 +3,7 @@ package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Product;
@@ -15,6 +12,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.ProductServ
 import java.io.IOException;
 
 @RestController
+@CrossOrigin("*")
 public class ProductController{
     private final ProductService productService;
 

@@ -13,6 +13,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.SupplierService;
 
 @RestController
+@CrossOrigin("*")
 public class SupplierController{
     private final SupplierService supplierService;
     public SupplierController(SupplierService supplierService) {

@@ -11,6 +11,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CustomerService;
 
 @RestController
+@CrossOrigin("*")
 public class CustomerController{
     private final CustomerService customerService;
 
