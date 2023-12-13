@@ -13,6 +13,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
 @RestController
+//@CrossOrigin("*")
 public class CategoryController {
     private final CategoryService categoryService;
 
