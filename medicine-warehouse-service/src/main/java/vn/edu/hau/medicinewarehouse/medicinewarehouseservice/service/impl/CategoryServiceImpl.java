@@ -37,6 +37,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
     public CategoryDetailDto getCategoryById(Long id) {
             Category category = this.categoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found category with id = " + id));
             CategoryDetailDto categoryDetailDto = new CategoryDetailDto();
+            categoryDetailDto.setId(category.getId());
             categoryDetailDto.setName(category.getName());
             categoryDetailDto.setDescription(category.getDescription());
             categoryDetailDto.setCreatedAt(category.getCreatedAt());

@@ -1,6 +1,8 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,11 +25,19 @@ public class Product extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "name")
+    @NotNull
+    @Size(min = 1, max = 50)
+    private String name;
+
     @Column(name = "avatar")
     private String avatar;
 
     @Column(name = "description")
     private String description;
+
+    @Column(name = "quantity")
+    private Long quantity;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")

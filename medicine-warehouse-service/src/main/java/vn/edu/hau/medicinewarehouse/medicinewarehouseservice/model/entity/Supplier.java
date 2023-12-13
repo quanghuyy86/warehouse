@@ -1,6 +1,7 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,12 +29,16 @@ public class Supplier extends BaseEntity{
     private String fullName;
 
     @Column(name = "phone")
+    @NotNull(message = "bắt buộc nhập số điện thoại")
     private String phone;
 
     @Column(name = "email")
+    @Email(message = "Email không hợp lệ")
+    @NotNull(message = "bắt buộc nhập email")
     private String email;
 
     @Column(name = "address")
+    @NotNull(message = "bắt buộc nhập địa chỉ")
     private String address;
 
     @Column(name = "note")

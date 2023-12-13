@@ -13,7 +13,6 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.SupplierService;
 
 @RestController
-@RequestMapping("supplier")
 public class SupplierController extends BaseController<Supplier, Long> {
     private final SupplierService supplierService;
     public SupplierController(SupplierService supplierService) {
@@ -21,28 +20,28 @@ public class SupplierController extends BaseController<Supplier, Long> {
         this.supplierService = supplierService;
     }
 
-    @GetMapping("get-list-supplier")
+    @GetMapping("/suppliers")
     public ResponseEntity<Object> getListCustomers(Request request){
         Page<Supplier> supplier = this.supplierService.getListSupplier(request);
         return new ResponseEntity<>(supplier, HttpStatus.OK);
     }
 
-    @PostMapping("create-supplier")
+    @PostMapping("/suppliers")
     public ResponseEntity<Object> createCustomer(@RequestBody @Validated SupplierDto supplierDto){
         return new ResponseEntity<>(this.supplierService.createOrUpdateSupplier(supplierDto, null), HttpStatus.CREATED);
     }
 
-    @GetMapping("get-supplier/{id}")
+    @GetMapping("/suppliers/{id}")
     public ResponseEntity<Object> getCustomerById(@PathVariable Long id){
         return new ResponseEntity<>(this.supplierService.getSupplierById(id), HttpStatus.OK);
     }
 
-    @PutMapping("update-supplier/{id}")
-    public ResponseEntity<Object> updateCustomerById(@PathVariable Long id, @RequestBody @Validated SupplierDto supplierDto){
+    @PutMapping("/suppliers/{id}")
+    public ResponseEntity<Object> updateCustomerById(@PathVariable Long id, @Validated @RequestBody SupplierDto supplierDto){
         return new ResponseEntity<>(this.supplierService.createOrUpdateSupplier(supplierDto, id), HttpStatus.OK);
     }
 
-    @DeleteMapping("delete-supplier/{id}")
+    @DeleteMapping("/suppliers/{id}")
     public ResponseEntity<Object> deleteById(@PathVariable Long id){
         return new ResponseEntity<>(this.supplierService.deleteSupplierById(id), HttpStatus.OK);
     }

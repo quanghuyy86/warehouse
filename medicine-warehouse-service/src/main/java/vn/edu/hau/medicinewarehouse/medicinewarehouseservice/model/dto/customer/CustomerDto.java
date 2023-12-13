@@ -14,6 +14,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerDto {
+    @Nullable
+    private Long id;
     @NotNull(message = "bắt buộc nhập tên")
     @Size(min = 1, max = 50)
     private String fullName;

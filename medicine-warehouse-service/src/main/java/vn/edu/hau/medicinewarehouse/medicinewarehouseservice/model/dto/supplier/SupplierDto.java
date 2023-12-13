@@ -17,6 +17,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SupplierDto {
+    @Nullable
+    private Long id;
     @NotNull(message = "bắt buộc nhập tên nhà cung cấp")
     @Size(min = 1, max = 50)
     private String fullName;

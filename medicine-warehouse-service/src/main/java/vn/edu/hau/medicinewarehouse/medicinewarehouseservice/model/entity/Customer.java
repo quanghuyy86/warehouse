@@ -1,6 +1,7 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +34,7 @@ public class Customer extends BaseEntity{
     private String phone;
 
     @Column(name = "email")
+    @Email(message = "định dạng emial không hợp lệ")
     @NotNull(message = "Bắt buộc nhập email")
     private String email;
 

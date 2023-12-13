@@ -13,7 +13,6 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
 @RestController
-@RequestMapping("categories")
 public class CategoryController extends BaseController<Category, Long> {
     private final CategoryService categoryService;
 
@@ -22,32 +21,31 @@ public class CategoryController extends BaseController<Category, Long> {
         this.categoryService = categoryService;
     }
 
-    @GetMapping("get-list-categories")
+    @GetMapping("/categories")
     public ResponseEntity<Object> getListCategories(Request request){
         Page<CategoryDto> data = categoryService.categoriesList(request);
         return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
-    @PostMapping("create-category")
-    public ResponseEntity<Object> createCategory(@RequestBody @Validated CategoryDto categoryDto){
+    @PostMapping("/categories")
+    public ResponseEntity<Object> createCategory(@Validated  @RequestBody CategoryDto categoryDto){
         Category category = categoryService.createOrUpdateCategory(null, categoryDto);
         return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
-    @GetMapping("get-category/{id}")
+    @GetMapping("/categories/{id}")
     public ResponseEntity<Object> getCategoryById(@PathVariable("id") Long id){
         CategoryDetailDto category = categoryService.getCategoryById(id);
         return new ResponseEntity<>(category, HttpStatus.OK);
     }
 
-    @PutMapping("update-category/{id}")
+    @PutMapping("/categories/{id}")
     public ResponseEntity<Object> updateCategory(@PathVariable("id") Long id,
-                                                 @RequestBody CategoryDto  categoryDto){
-        Category category = categoryService.createOrUpdateCategory(id, categoryDto);
-        return new ResponseEntity<>(category,HttpStatus.OK);
+                                                 @Validated @RequestBody CategoryDto  categoryDto){
+        return new ResponseEntity<>(this.categoryService.createOrUpdateCategory(id, categoryDto),HttpStatus.OK);
     }
 
-    @DeleteMapping("delete-category/{id}")
+    @DeleteMapping("/categories/{id}")
     public ResponseEntity<Object> deleteCategory(@PathVariable("id") Long id){
         Boolean delete = categoryService.deleteCategoryById(id);
         return new ResponseEntity<>(delete, HttpStatus.NO_CONTENT);
