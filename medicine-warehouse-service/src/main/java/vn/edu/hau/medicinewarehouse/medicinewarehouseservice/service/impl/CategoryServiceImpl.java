@@ -42,7 +42,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
             categoryDetailDto.setDescription(category.getDescription());
             categoryDetailDto.setCreatedAt(category.getCreatedAt());
             categoryDetailDto.setUpdatedAt(category.getUpdatedAt());
-            return categoryDetailDto;
+            return !category.isDeleted() ? categoryDetailDto : null;
     }
 
     @Override

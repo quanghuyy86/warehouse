@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -24,17 +25,13 @@ public class Category extends BaseEntity{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    @NotNull(message = "Bắt buộc nhập tên category")
-    @Size(min = 1, max = 50)
+    @Column(name = "name", length = 50, nullable = false)
     private String name;
 
-    @Column(name = "description")
-    @Size(min = 1)
+    @Column(name = "description", nullable = true)
     private String description;
-
-    @OneToMany(cascade = CascadeType.ALL, //Khi xóa 1 category thì tất cả pruducts sẽ bị xóa
-            fetch = FetchType.LAZY, // khi lấy product đấy, thì nó sẽ k lấy tất cả các sản phẩm product đấy, chỉ lấy thông tin của mặt hàng đấy thôi
-            mappedBy = "categories") //giá trị của mappedBy bằng tên property của ManyToOne
-    private Set<Product> products = new HashSet<Product>();
+//note
+    @OneToMany(fetch = FetchType.LAZY, // khi lấy product đấy, thì nó sẽ k lấy tất cả các sản phẩm product đấy, chỉ lấy thông tin của mặt hàng đấy thôi
+               mappedBy = "category") //giá trị của mappedBy bằng tên property của ManyToOne
+    private List<Product> products;
 }

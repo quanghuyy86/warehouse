@@ -2,6 +2,7 @@ package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer
 
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class CustomerDto {
     @Size(min = 1, max = 50)
     private String phone;
     @NotNull(message = "bắt buộc nhập email")
+    @Email(message = "Không đúng định dạng email")
     @Size(min = 1, max = 50)
     private String email;
     @NotNull(message = "bắt buộc nhập địa chỉ")

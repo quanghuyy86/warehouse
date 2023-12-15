@@ -18,5 +18,5 @@ public class ProductDto {
     private String avatar;
     private String description;
     private Long quantity;
-    private CategoryDto categoryDto;
+    private Long categoryId;
 }

@@ -36,24 +36,25 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
     }
 
     @Override
-    public Customer createOrUpdateCustomer(CustomerDto customerDto, Long id) {
-        if(id != null && id > 0){
-            Customer customer = this.customerRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Not found with id = " + id));
-            customer.setFullName(customerDto.getFullName());
-            customer.setPhone(customerDto.getPhone());
-            customer.setEmail(customerDto.getEmail());
-            customer.setAddress(customerDto.getAddress());
-            customer.setNote(customerDto.getNote());
-            return this.customerRepository.save(customer);
-        }else {
-            Customer customer = new Customer();
-            customer.setFullName(customerDto.getFullName());
-            customer.setPhone(customerDto.getPhone());
-            customer.setEmail(customerDto.getEmail());
-            customer.setAddress(customerDto.getAddress());
-            customer.setNote(customerDto.getNote());
-            return this.customerRepository.save(customer);
-        }
+    public Customer createCustomer(CustomerDto customerDto) {
+        Customer customer = new Customer();
+        customer.setFullName(customerDto.getFullName());
+        customer.setPhone(customerDto.getPhone());
+        customer.setEmail(customerDto.getEmail());
+        customer.setAddress(customerDto.getAddress());
+        customer.setNote(customerDto.getNote());
+        return this.customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer updateCustomer(Long id, CustomerDto customerDto) {
+        Customer customer = this.customerRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Not found with id = " + id));
+        customer.setFullName(customerDto.getFullName());
+        customer.setPhone(customerDto.getPhone());
+        customer.setEmail(customerDto.getEmail());
+        customer.setAddress(customerDto.getAddress());
+        customer.setNote(customerDto.getNote());
+        return this.customerRepository.save(customer);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
         customerDetailDto.setNote(customer.getNote());
         customerDetailDto.setCreatedAt(customer.getCreatedAt());
         customerDetailDto.setUpdatedAt(customer.getUpdatedAt());
-        return customerDetailDto;
+        return !customer.isDeleted() ? customerDetailDto : null;
     }
 
     @Override

@@ -25,23 +25,24 @@ public class Product extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name")
-    @NotNull
-    @Size(min = 1, max = 50)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 
     @Column(name = "avatar")
     private String avatar;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = true)
     private String description;
 
     @Column(name = "quantity")
     private Long quantity;
 
+    @Column(name = "category_id")
+    private Long categoryId;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    private Category categories;
+    @JoinColumn(name = "category_id", insertable = false, updatable=false)
+    private Category category;
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,

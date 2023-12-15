@@ -1,5 +1,6 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception;
 
+import java.io.IOException;
 import java.util.Date;
 
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class ControllerExceptionHandler {
         return message;
     }
 
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler({Exception.class, IOException.class})
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorMessage globalExceptionHandler(Exception ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage(
@@ -34,4 +35,6 @@ public class ControllerExceptionHandler {
 
         return message;
     }
+
+
 }

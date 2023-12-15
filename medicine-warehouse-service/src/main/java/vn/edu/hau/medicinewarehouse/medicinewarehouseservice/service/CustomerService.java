@@ -9,7 +9,8 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 
 public interface CustomerService extends BaseService<Customer, Long> {
     Page<Customer> getListCustomer(Request request);
-    Customer createOrUpdateCustomer(CustomerDto customerDto, Long id);
+    Customer createCustomer(CustomerDto customerDto);
+    Customer updateCustomer(Long id,CustomerDto customerDto);
     CustomerDetailDto getCustomerById(Long id);
     Boolean deleteCustomerById(Long id);
 }

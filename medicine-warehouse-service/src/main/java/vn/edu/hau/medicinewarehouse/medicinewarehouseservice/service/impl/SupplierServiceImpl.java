@@ -36,24 +36,25 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
     }
 
     @Override
-    public Supplier createOrUpdateSupplier(SupplierDto SupplierDto, Long id) {
-        if(id != null && id > 0){
-            Supplier supplier = this.supplierRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Not found with id = " + id));
-            supplier.setFullName(SupplierDto.getFullName());
-            supplier.setPhone(SupplierDto.getPhone());
-            supplier.setEmail(SupplierDto.getEmail());
-            supplier.setAddress(SupplierDto.getAddress());
-            supplier.setNote(SupplierDto.getNote());
-            return this.supplierRepository.save(supplier);
-        }else {
-            Supplier supplier = new Supplier();
-            supplier.setFullName(SupplierDto.getFullName());
-            supplier.setPhone(SupplierDto.getPhone());
-            supplier.setEmail(SupplierDto.getEmail());
-            supplier.setAddress(SupplierDto.getAddress());
-            supplier.setNote(SupplierDto.getNote());
-            return this.supplierRepository.save(supplier);
-        }
+    public Supplier createSupplier(SupplierDto supplierDto) {
+        Supplier supplier = new Supplier();
+        supplier.setFullName(supplierDto.getFullName());
+        supplier.setPhone(supplierDto.getPhone());
+        supplier.setEmail(supplierDto.getEmail());
+        supplier.setAddress(supplierDto.getAddress());
+        supplier.setNote(supplierDto.getNote());
+        return this.supplierRepository.save(supplier);
+    }
+
+    @Override
+    public Supplier updateSupplier(Long id, SupplierDto supplierDto) {
+        Supplier supplier = this.supplierRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Not found with id = " + id));
+        supplier.setFullName(supplierDto.getFullName());
+        supplier.setPhone(supplierDto.getPhone());
+        supplier.setEmail(supplierDto.getEmail());
+        supplier.setAddress(supplierDto.getAddress());
+        supplier.setNote(supplierDto.getNote());
+        return this.supplierRepository.save(supplier);
     }
 
     @Override
@@ -67,7 +68,7 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
         supplierDetailDto.setNote(supplier.getNote());
         supplierDetailDto.setCreatedAt(supplier.getCreatedAt());
         supplierDetailDto.setUpdatedAt(supplier.getUpdatedAt());
-        return supplierDetailDto;
+        return !supplier.isDeleted() ? supplierDetailDto : null;
     }
 
     @Override

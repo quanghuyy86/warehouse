@@ -27,7 +27,7 @@ public class CustomerController{
 
     @PostMapping("/customers")
     public ResponseEntity<Object> createCustomer(@RequestBody @Validated CustomerDto customerDto){
-        return new ResponseEntity<>(this.customerService.createOrUpdateCustomer(customerDto, null), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.customerService.createCustomer(customerDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/customers/{id}")
@@ -38,11 +38,11 @@ public class CustomerController{
     @PutMapping("/customers/{id}")
     public ResponseEntity<Object> updateCustomerById(@PathVariable Long id,
                                                      @Validated @RequestBody CustomerDto customerDto){
-        return new ResponseEntity<>(this.customerService.createOrUpdateCustomer(customerDto, id), HttpStatus.OK);
+        return new ResponseEntity<>(this.customerService.updateCustomer(id, customerDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/customers/{id}")
     public ResponseEntity<Object> deleteById(@PathVariable Long id){
-        return new ResponseEntity<>(this.customerService.deleteById(id), HttpStatus.OK);
+        return new ResponseEntity<>(this.customerService.deleteCustomerById(id), HttpStatus.OK);
     }
 }

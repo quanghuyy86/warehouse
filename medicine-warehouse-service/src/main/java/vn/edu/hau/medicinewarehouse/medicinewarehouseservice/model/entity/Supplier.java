@@ -24,21 +24,16 @@ public class Supplier extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "fullname")
-    @NotNull(message = "bắt buộc nhập tên nhà cung cấp")
+    @Column(name = "fullname", nullable = false, length = 50)
     private String fullName;
 
-    @Column(name = "phone")
-    @NotNull(message = "bắt buộc nhập số điện thoại")
+    @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "email")
-    @Email(message = "Email không hợp lệ")
-    @NotNull(message = "bắt buộc nhập email")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "address")
-    @NotNull(message = "bắt buộc nhập địa chỉ")
+    @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "note")

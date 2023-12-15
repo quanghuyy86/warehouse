@@ -25,21 +25,16 @@ public class Customer extends BaseEntity{
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "fullname")
-    @NotNull(message = "Bắt buộc nhập tên khách hàng")
+    @Column(name = "fullname", nullable = false, length = 50)
     private String fullName;
 
-    @Column(name = "phone")
-    @NotNull(message = "Bắt buộc nhập số điện thoại")
+    @Column(name = "phone", nullable = false)
     private String phone;
 
-    @Column(name = "email")
-    @Email(message = "định dạng emial không hợp lệ")
-    @NotNull(message = "Bắt buộc nhập email")
+    @Column(name = "email", nullable = false)
     private String email;
 
-    @Column(name = "address")
-    @NotNull(message = "Bắt buộc nhập địa chỉ")
+    @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "note")

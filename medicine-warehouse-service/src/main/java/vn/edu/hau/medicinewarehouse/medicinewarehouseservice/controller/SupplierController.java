@@ -28,7 +28,7 @@ public class SupplierController{
 
     @PostMapping("/suppliers")
     public ResponseEntity<Object> createCustomer(@RequestBody @Validated SupplierDto supplierDto){
-        return new ResponseEntity<>(this.supplierService.createOrUpdateSupplier(supplierDto, null), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.supplierService.createSupplier(supplierDto), HttpStatus.CREATED);
     }
 
     @GetMapping("/suppliers/{id}")
@@ -38,7 +38,7 @@ public class SupplierController{
 
     @PutMapping("/suppliers/{id}")
     public ResponseEntity<Object> updateCustomerById(@PathVariable Long id, @Validated @RequestBody SupplierDto supplierDto){
-        return new ResponseEntity<>(this.supplierService.createOrUpdateSupplier(supplierDto, id), HttpStatus.OK);
+        return new ResponseEntity<>(this.supplierService.updateSupplier(id,supplierDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/suppliers/{id}")
