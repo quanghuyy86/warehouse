@@ -13,7 +13,6 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
 @RestController
-@CrossOrigin("*")
 public class CategoryController {
     private final CategoryService categoryService;
 
@@ -29,7 +28,7 @@ public class CategoryController {
 
     @PostMapping("/categories")
     public ResponseEntity<Object> createCategory(@Validated @RequestBody CategoryDto categoryDto){
-        Category category = categoryService.createOrUpdateCategory(null, categoryDto);
+        Category category = categoryService.createCategory(categoryDto);
         return new ResponseEntity<>(category, HttpStatus.CREATED);
     }
 
@@ -42,7 +41,7 @@ public class CategoryController {
     @PutMapping("/categories/{id}")
     public ResponseEntity<Object> updateCategory(@PathVariable("id") Long id,
                                                  @Validated @RequestBody CategoryDto  categoryDto){
-        return new ResponseEntity<>(this.categoryService.createOrUpdateCategory(id, categoryDto),HttpStatus.OK);
+        return new ResponseEntity<>(this.categoryService.updateCategory(id, categoryDto),HttpStatus.OK);
     }
 
     @DeleteMapping("/categories/{id}")

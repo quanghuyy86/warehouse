@@ -46,29 +46,26 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
     }
 
     @Override
-    public Category createOrUpdateCategory(Long id, CategoryDto categoryDto) {
-            if(id != null && id > 0){
-                Category categoryEntity = this.categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + id));
-                categoryEntity.setName(categoryDto.getName());
-                categoryEntity.setDescription(categoryDto.getDescription());
-                return categoryRepository.save(categoryEntity);
-            }else {
-                Category categoryEntity = new Category();
-                categoryEntity.setName(categoryDto.getName());
-                categoryEntity.setDescription(categoryDto.getDescription());
-                return categoryRepository.save(categoryEntity);
-            }
+    public Category createCategory(CategoryDto categoryDto) {
+        Category categoryEntity = new Category();
+        categoryEntity.setName(categoryDto.getName());
+        categoryEntity.setDescription(categoryDto.getDescription());
+        return categoryRepository.save(categoryEntity);
+    }
+
+    @Override
+    public Category updateCategory(Long id, CategoryDto categoryDto) {
+        Category categoryEntity = this.categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + id));
+        categoryEntity.setName(categoryDto.getName());
+        categoryEntity.setDescription(categoryDto.getDescription());
+        return categoryRepository.save(categoryEntity);
     }
 
     @Override
     public Boolean deleteCategoryById(Long id) {
-        try {
-            Category category = this.categoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found category with id = " + id));
-            category.setDeleted(true);
-            this.repository.save(category);
-            return true;
-        } catch (Exception var3) {
-            return false;
-        }
+        Category category = this.categoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found category with id = " + id));
+        category.setDeleted(true);
+        this.repository.save(category);
+        return true;
     }
 }

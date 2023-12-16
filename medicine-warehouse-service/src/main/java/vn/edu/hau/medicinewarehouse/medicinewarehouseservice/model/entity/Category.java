@@ -30,8 +30,8 @@ public class Category extends BaseEntity{
 
     @Column(name = "description", nullable = true)
     private String description;
-//note
-    @OneToMany(fetch = FetchType.LAZY, // khi lấy product đấy, thì nó sẽ k lấy tất cả các sản phẩm product đấy, chỉ lấy thông tin của mặt hàng đấy thôi
-               mappedBy = "category") //giá trị của mappedBy bằng tên property của ManyToOne
-    private List<Product> products;
+
+    @OneToMany(fetch = FetchType.LAZY,
+               mappedBy = "category")
+    private Set<Product> products = new HashSet<Product>();
 }

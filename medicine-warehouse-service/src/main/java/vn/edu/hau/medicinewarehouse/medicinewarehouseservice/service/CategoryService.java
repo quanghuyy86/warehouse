@@ -9,6 +9,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Reque
 public interface CategoryService extends BaseService<Category, Long>{
     Page<CategoryDto> categoriesList(Request request);
     CategoryDetailDto getCategoryById(Long id);
-    Category createOrUpdateCategory(Long id, CategoryDto categoryDto);
+    Category createCategory(CategoryDto categoryDto);
+    Category updateCategory(Long id, CategoryDto categoryDto);
     Boolean deleteCategoryById(Long id);
 }
