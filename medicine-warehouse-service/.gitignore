@@ -31,3 +31,4 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/java/vn/edu/hau/medicinewarehouse/medicinewarehouseservice/model/dto/supplier/SupplierDetailDto.java
