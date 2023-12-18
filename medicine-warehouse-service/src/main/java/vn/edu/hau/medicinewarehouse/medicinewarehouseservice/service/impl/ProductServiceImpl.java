@@ -34,7 +34,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     private boolean isEmptyUploadFile(MultipartFile avatar) {
         return avatar == null || Objects.requireNonNull(avatar.getOriginalFilename()).isEmpty();
     }
-    public List<Product> searchProduct(String keyword, Category category){
+    public List<Product> searchProduct(String keyword,  Category category ){
         return productRepository.findByNameContainingAndCategory(keyword, category);
     }
 

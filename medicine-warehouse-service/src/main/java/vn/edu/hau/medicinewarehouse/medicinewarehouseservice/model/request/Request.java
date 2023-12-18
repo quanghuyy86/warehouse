@@ -8,6 +8,6 @@ import lombok.Setter;
 //@JsonIgnoreProperties(ignoreUnknown = true)
 public class Request {
     private int page = 0;
-    private int pageSize = 10;
+    private int pageSize = 5;
     private String keyword;
 }

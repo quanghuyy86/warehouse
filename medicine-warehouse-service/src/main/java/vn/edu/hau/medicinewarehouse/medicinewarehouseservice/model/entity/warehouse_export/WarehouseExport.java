@@ -35,16 +35,15 @@ public class WarehouseExport extends BaseEntity {
     @Column(name = "note")
     private String note;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user; //nhân viên tạo đơn
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id")
     private Customer customer; //nhân viên tạo đơn
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
+    @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "warehouseExport")
     private Set<WarehouseExportDetail> warehouseExportDetails = new HashSet<WarehouseExportDetail>();
 }

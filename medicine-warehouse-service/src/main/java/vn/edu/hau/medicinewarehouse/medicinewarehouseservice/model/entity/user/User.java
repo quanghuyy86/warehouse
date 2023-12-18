@@ -32,8 +32,10 @@ public class User extends BaseEntity {
     private String email;
     @Column(name = "telephone")
     private String telephone;
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user",
+            fetch = FetchType.EAGER)
     private Set<UserRole> userRoles;
+
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "user")
