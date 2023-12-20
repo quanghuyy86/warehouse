@@ -13,8 +13,8 @@ import java.util.List;
 
 public interface ProductService extends BaseService<Product, Long>{
     List<Product> getListProduct(Request request, Category category);
-    Product createProduct(ProductDto productDto, MultipartFile avatar);
-    Product updateProduct(Long id, ProductDto productDto, MultipartFile avatar);
+    void createProduct(ProductDto productDto, MultipartFile avatar);
+    void updateProduct(Long id, ProductDto productDto, MultipartFile avatar);
     ProductDetailDto getProductById(Long id);
-    Boolean deleteProductById(Long id);
+    void deleteProductById(Long id);
 }

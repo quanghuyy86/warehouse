@@ -1,47 +1,61 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.controller;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponse;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseCode;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseGenerator;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.CreateSupplierDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.UpdateSupplierDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Supplier;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.SupplierService;
 
 @RestController
-public class SupplierController{
+@RequestMapping("/suppliers")
+@RequiredArgsConstructor
+@Slf4j
+public class SupplierController {
     private final SupplierService supplierService;
-    public SupplierController(SupplierService supplierService) {
-        this.supplierService = supplierService;
-    }
 
-    @GetMapping("/suppliers")
-    public ResponseEntity<Object> getListCustomers(Request request){
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<Page<Supplier>>> getListCustomers(Request request) {
         Page<Supplier> supplier = this.supplierService.getListSupplier(request);
-        return new ResponseEntity<>(supplier, HttpStatus.OK);
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "get list supplier", supplier), HttpStatus.OK);
     }
 
-    @PostMapping("/suppliers")
-    public ResponseEntity<Object> createCustomer(@RequestBody @Validated SupplierDto supplierDto){
-        return new ResponseEntity<>(this.supplierService.createSupplier(supplierDto), HttpStatus.CREATED);
+    @PostMapping()
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<ApiResponse<Void>> createCustomer(@RequestBody @Validated CreateSupplierDto createSupplierDto) {
+        this.supplierService.createSupplier(createSupplierDto);
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.CREATED, "Create supplier"), HttpStatus.CREATED);
     }
 
-    @GetMapping("/suppliers/{id}")
-    public ResponseEntity<Object> getCustomerById(@PathVariable Long id){
-        return new ResponseEntity<>(this.supplierService.getSupplierById(id), HttpStatus.OK);
+    @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<SupplierDetailDto>> getCustomerById(@PathVariable Long id) {
+        SupplierDetailDto supplierDetailDto = this.supplierService.getSupplierById(id);
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Get supplier by id", supplierDetailDto), HttpStatus.OK);
     }
 
-    @PutMapping("/suppliers/{id}")
-    public ResponseEntity<Object> updateCustomerById(@PathVariable Long id, @Validated @RequestBody SupplierDto supplierDto){
-        return new ResponseEntity<>(this.supplierService.updateSupplier(id,supplierDto), HttpStatus.OK);
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<Void>> updateCustomerById(@PathVariable Long id, @Validated @RequestBody UpdateSupplierDto updateSupplierDto) {
+        this.supplierService.updateSupplier(id, updateSupplierDto);
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "update supplier"), HttpStatus.OK);
     }
 
-    @DeleteMapping("/suppliers/{id}")
-    public ResponseEntity<Object> deleteById(@PathVariable Long id){
-        return new ResponseEntity<>(this.supplierService.deleteSupplierById(id), HttpStatus.OK);
+    @DeleteMapping("{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<Object> deleteById(@PathVariable Long id) {
+        this.supplierService.deleteSupplierById(id);
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.NO_CONTENT, "Delete supplier"), HttpStatus.OK);
     }
 }

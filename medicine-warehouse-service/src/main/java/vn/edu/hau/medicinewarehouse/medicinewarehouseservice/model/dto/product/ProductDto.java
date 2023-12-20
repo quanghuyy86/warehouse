@@ -1,12 +1,11 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product;
 
 import io.micrometer.common.lang.Nullable;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryDto;
+
 @Getter
 @Setter
 @AllArgsConstructor

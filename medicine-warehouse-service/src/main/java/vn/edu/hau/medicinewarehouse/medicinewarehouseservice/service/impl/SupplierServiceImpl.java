@@ -7,13 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierDetailDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.CreateSupplierDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.UpdateSupplierDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Supplier;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.SupplierRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.SupplierService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> implements SupplierService {
@@ -36,46 +38,57 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
     }
 
     @Override
-    public Supplier createSupplier(SupplierDto supplierDto) {
+    public void createSupplier(CreateSupplierDto createSupplierDto) {
+        if(supplierRepository.existsByFullName(createSupplierDto.getFullName())){
+            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
+        }
         Supplier supplier = new Supplier();
-        supplier.setFullName(supplierDto.getFullName());
-        supplier.setPhone(supplierDto.getPhone());
-        supplier.setEmail(supplierDto.getEmail());
-        supplier.setAddress(supplierDto.getAddress());
-        supplier.setNote(supplierDto.getNote());
-        return this.supplierRepository.save(supplier);
+        supplier.setFullName(createSupplierDto.getFullName());
+        supplier.setPhone(createSupplierDto.getPhone());
+        supplier.setEmail(createSupplierDto.getEmail());
+        supplier.setAddress(createSupplierDto.getAddress());
+        supplier.setNote(createSupplierDto.getNote());
+        this.supplierRepository.save(supplier);
     }
 
     @Override
-    public Supplier updateSupplier(Long id, SupplierDto supplierDto) {
-        Supplier supplier = this.supplierRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Not found with id = " + id));
-        supplier.setFullName(supplierDto.getFullName());
-        supplier.setPhone(supplierDto.getPhone());
-        supplier.setEmail(supplierDto.getEmail());
-        supplier.setAddress(supplierDto.getAddress());
-        supplier.setNote(supplierDto.getNote());
-        return this.supplierRepository.save(supplier);
+    public void updateSupplier(Long id, UpdateSupplierDto updateSupplierDto) {
+        Optional<String> name = Optional.ofNullable(updateSupplierDto.getFullName());
+        if (name.isPresent() && supplierRepository.existsByFullName(name.get())) {
+            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
+        }
+        supplierRepository.findById(id)
+                .map(group -> {
+                    Optional.ofNullable(updateSupplierDto.getFullName()).ifPresent(group::setFullName);
+                    Optional.ofNullable(updateSupplierDto.getEmail()).ifPresent(group::setEmail);
+                    Optional.ofNullable(updateSupplierDto.getPhone()).ifPresent(group::setPhone);
+                    Optional.ofNullable(updateSupplierDto.getAddress()).ifPresent(group::setAddress);
+                    Optional.ofNullable(updateSupplierDto.getNote()).ifPresent(group::setNote);
+                    return group;
+                })
+                .map(supplierRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
+
+
     }
 
     @Override
     public SupplierDetailDto getSupplierById(Long id) {
         Supplier supplier = this.supplierRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found customer with id = " + id));
-        SupplierDetailDto supplierDetailDto = new SupplierDetailDto();
-        supplierDetailDto.setFullName(supplier.getFullName());
-        supplierDetailDto.setEmail(supplier.getEmail());
-        supplierDetailDto.setAddress(supplier.getAddress());
-        supplierDetailDto.setPhone(supplier.getPhone());
-        supplierDetailDto.setNote(supplier.getNote());
-        supplierDetailDto.setCreatedAt(supplier.getCreatedAt());
-        supplierDetailDto.setUpdatedAt(supplier.getUpdatedAt());
-        return !supplier.isDeleted() ? supplierDetailDto : null;
+        SupplierDetailDto createSupplierDetailDto = new SupplierDetailDto();
+        createSupplierDetailDto.setFullName(supplier.getFullName());
+        createSupplierDetailDto.setEmail(supplier.getEmail());
+        createSupplierDetailDto.setAddress(supplier.getAddress());
+        createSupplierDetailDto.setPhone(supplier.getPhone());
+        createSupplierDetailDto.setNote(supplier.getNote());
+        createSupplierDetailDto.setCreatedAt(supplier.getCreatedAt());
+        createSupplierDetailDto.setUpdatedAt(supplier.getUpdatedAt());
+        return !supplier.isDeleted() ? createSupplierDetailDto : null;
     }
 
     @Override
-    public Boolean deleteSupplierById(Long id) {
+    public void deleteSupplierById(Long id) {
         Supplier supplier = this.supplierRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found customer with id = " + id));
         supplier.setDeleted(true);
         this.supplierRepository.save(supplier);
-        return true;
     }
 }

@@ -7,13 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryDetailDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CreatCategoryDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.UpdateCategoryDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Category;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CategoryRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> implements CategoryService {
@@ -28,10 +30,10 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
         return categoryRepository.findByNameContaining(keyword);
     }
     @Override
-    public Page<CategoryDto> categoriesList(Request request) {
+    public Page<CreatCategoryDto> categoriesList(Request request) {
         List list = this.searchCategory(request.getKeyword());
         Pageable pageable = PageRequest.of(request.getPage(), request.getPageSize());
-        return new PageImpl<CategoryDto>(list, pageable, this.searchCategory(request.getKeyword()).size());
+        return new PageImpl<CreatCategoryDto>(list, pageable, this.searchCategory(request.getKeyword()).size());
     }
     @Override
     public CategoryDetailDto getCategoryById(Long id) {
@@ -46,26 +48,35 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
     }
 
     @Override
-    public Category createCategory(CategoryDto categoryDto) {
+    public void createCategory(CreatCategoryDto creatCategoryDto) {
+        if (this.categoryRepository.existsByName(creatCategoryDto.getName())){
+            throw new ResourceNotFoundException("Tên nhóm thuốc đã tồn tại!");
+        }
         Category categoryEntity = new Category();
-        categoryEntity.setName(categoryDto.getName());
-        categoryEntity.setDescription(categoryDto.getDescription());
-        return categoryRepository.save(categoryEntity);
+        categoryEntity.setName(creatCategoryDto.getName());
+        categoryEntity.setDescription(creatCategoryDto.getDescription());
+        categoryRepository.save(categoryEntity);
     }
 
     @Override
-    public Category updateCategory(Long id, CategoryDto categoryDto) {
-        Category categoryEntity = this.categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + id));
-        categoryEntity.setName(categoryDto.getName());
-        categoryEntity.setDescription(categoryDto.getDescription());
-        return categoryRepository.save(categoryEntity);
+    public void updateCategory(Long id, UpdateCategoryDto updateCategoryDto) {
+        Optional<String> name = Optional.ofNullable(updateCategoryDto.getName());
+        if (name.isPresent() && categoryRepository.existsByName(name.get())) {
+            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
+        }
+        categoryRepository.findById(id)
+                .map(group -> {
+                    Optional.ofNullable(updateCategoryDto.getName()).ifPresent(group::setName);
+                    Optional.ofNullable(updateCategoryDto.getDescription()).ifPresent(group::setDescription);
+                    return group;
+                })
+                .map(categoryRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
     }
 
     @Override
-    public Boolean deleteCategoryById(Long id) {
+    public void deleteCategoryById(Long id) {
         Category category = this.categoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found category with id = " + id));
         category.setDeleted(true);
         this.repository.save(category);
-        return true;
     }
 }

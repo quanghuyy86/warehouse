@@ -7,13 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CreateCustomerDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.UpdateCustomerDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CustomerRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CustomerService;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> implements CustomerService {
@@ -36,25 +38,36 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
     }
 
     @Override
-    public Customer createCustomer(CustomerDto customerDto) {
+    public void createCustomer(CreateCustomerDto createCustomerDto) {
+        if(customerRepository.existsByFullName(createCustomerDto.getFullName())){
+            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
+        }
         Customer customer = new Customer();
-        customer.setFullName(customerDto.getFullName());
-        customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
-        customer.setAddress(customerDto.getAddress());
-        customer.setNote(customerDto.getNote());
-        return this.customerRepository.save(customer);
+        customer.setFullName(createCustomerDto.getFullName());
+        customer.setPhone(createCustomerDto.getPhone());
+        customer.setEmail(createCustomerDto.getEmail());
+        customer.setAddress(createCustomerDto.getAddress());
+        customer.setNote(createCustomerDto.getNote());
+        this.customerRepository.save(customer);
     }
 
     @Override
-    public Customer updateCustomer(Long id, CustomerDto customerDto) {
-        Customer customer = this.customerRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("Not found with id = " + id));
-        customer.setFullName(customerDto.getFullName());
-        customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
-        customer.setAddress(customerDto.getAddress());
-        customer.setNote(customerDto.getNote());
-        return this.customerRepository.save(customer);
+    public void updateCustomer(Long id, UpdateCustomerDto updateCustomerDto) {
+        Optional<String> name = Optional.ofNullable(updateCustomerDto.getFullName());
+        if (name.isPresent() && customerRepository.existsByFullName(name.get())) {
+            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
+        }
+        customerRepository.findById(id)
+                .map(group -> {
+                    Optional.ofNullable(updateCustomerDto.getFullName()).ifPresent(group::setFullName);
+                    Optional.ofNullable(updateCustomerDto.getEmail()).ifPresent(group::setEmail);
+                    Optional.ofNullable(updateCustomerDto.getPhone()).ifPresent(group::setPhone);
+                    Optional.ofNullable(updateCustomerDto.getAddress()).ifPresent(group::setAddress);
+                    Optional.ofNullable(updateCustomerDto.getNote()).ifPresent(group::setNote);
+                    return group;
+                })
+                .map(customerRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
+
     }
 
     @Override
@@ -72,10 +85,9 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
     }
 
     @Override
-    public Boolean deleteCustomerById(Long id) {
+    public void deleteCustomerById(Long id) {
         Customer customer = this.customerRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found customer with id = " + id));
         customer.setDeleted(true);
         this.customerRepository.save(customer);
-        return true;
     }
 }

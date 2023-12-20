@@ -7,7 +7,8 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Catego
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-//    @Query("select c from Category c where c.name like %?1%")
     List<Category> findByNameContaining(String keyword);
+    boolean existsByName(String name);
+
 
 }

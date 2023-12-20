@@ -1,6 +1,5 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category;
 
-import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -13,13 +12,11 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryDto {
+public class UpdateCategoryDto {
     @Nullable
-    private Long id;
-    @NotNull(message = "bắt buộc nhập tên")
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 500)
     private String name;
     @Nullable
-    @Size(min = 1)
+    @Size(min = 1, max = 500)
     private String description;
 }
