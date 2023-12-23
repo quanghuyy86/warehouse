@@ -9,7 +9,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Suppli
 
 public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 
-    @Query("SELECT s FROM Customer s WHERE " +
+    @Query("SELECT s FROM Supplier s WHERE " +
             "(:name IS NULL OR s.fullName LIKE %:name% ) " +
             "AND (:phone IS NULL OR s.phone LIKE %:phone%) " +
             "AND (:email IS NULL OR s.email LIKE %:email%) ")
