@@ -4,17 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PagingOption;
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class CustomerDetailDto {
-    private Long id;
-    private String fullName;
+@AllArgsConstructor
+public class CustomerParamFilterDto extends PagingOption {
+    private String name;
     private String phone;
     private String email;
-    private String address;
-    private String note;
-
 }

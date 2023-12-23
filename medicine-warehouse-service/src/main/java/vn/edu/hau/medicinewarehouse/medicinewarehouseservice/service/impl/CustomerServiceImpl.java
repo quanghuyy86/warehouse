@@ -1,20 +1,19 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.impl;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponseConverter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CreateCustomerDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.UpdateCustomerDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CustomerRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CustomerService;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,20 +25,24 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
         this.customerRepository = customerRepository;
     }
 
-    public List<Customer> searchCustomerByName(String keyword){
-        return this.customerRepository.findByFullNameContaining(keyword);
-    }
-
     @Override
-    public Page<Customer> getListCustomer(Request request) {
-        List<Customer> list = this.searchCustomerByName(request.getKeyword());
-        Pageable pageable = PageRequest.of(request.getPage(), request.getPageSize());
-        return new PageImpl<Customer>(list, pageable, this.searchCustomerByName(request.getKeyword()).size());
+    public PageResponse<CustomerDetailDto> categoriesList(CustomerParamFilterDto request) {
+        Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() - 1);
+        Page<CustomerDetailDto> list = customerRepository.searchCustomer(request.getName(), request.getPhone(), request.getEmail(), pageable)
+                .map(group -> new CustomerDetailDto(
+                        group.getId(),
+                        group.getFullName(),
+                        group.getPhone(),
+                        group.getEmail(),
+                        group.getAddress(),
+                        group.getNote()
+                ));
+        return PageResponseConverter.convert(list);
     }
 
     @Override
     public void createCustomer(CreateCustomerDto createCustomerDto) {
-        if(customerRepository.existsByFullName(createCustomerDto.getFullName())){
+        if (customerRepository.existsByFullName(createCustomerDto.getFullName())) {
             throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
         }
         Customer customer = new Customer();
@@ -72,21 +75,19 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 
     @Override
     public CustomerDetailDto getCustomerById(Long id) {
-        Customer customer = this.customerRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found customer with id = " + id));
+        Customer customer = this.customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found customer with id = " + id));
         CustomerDetailDto customerDetailDto = new CustomerDetailDto();
         customerDetailDto.setFullName(customer.getFullName());
         customerDetailDto.setEmail(customer.getEmail());
         customerDetailDto.setAddress(customer.getAddress());
         customerDetailDto.setPhone(customer.getPhone());
         customerDetailDto.setNote(customer.getNote());
-        customerDetailDto.setCreatedAt(customer.getCreatedAt());
-        customerDetailDto.setUpdatedAt(customer.getUpdatedAt());
         return !customer.isDeleted() ? customerDetailDto : null;
     }
 
     @Override
     public void deleteCustomerById(Long id) {
-        Customer customer = this.customerRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found customer with id = " + id));
+        Customer customer = this.customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found customer with id = " + id));
         customer.setDeleted(true);
         this.customerRepository.save(customer);
     }

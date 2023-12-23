@@ -40,9 +40,9 @@ public class Customer extends BaseEntity{
     @Column(name = "note")
     private String note;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "customer")
-    private Set<WarehouseExport> warehouseExports  = new HashSet<WarehouseExport>();
+//    @OneToMany(cascade = CascadeType.ALL,
+//            fetch = FetchType.LAZY,
+//            mappedBy = "customer")
+//    private Set<WarehouseExport> warehouseExports  = new HashSet<WarehouseExport>();
 
 }

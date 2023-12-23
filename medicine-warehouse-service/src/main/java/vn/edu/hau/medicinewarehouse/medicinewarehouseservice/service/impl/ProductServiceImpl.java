@@ -1,13 +1,17 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.impl;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponseConverter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Category;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Product;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CategoryRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.ProductRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.ProductService;
@@ -16,7 +20,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -35,10 +38,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
         return avatar != null && !Objects.requireNonNull(avatar.getOriginalFilename()).isEmpty();
     }
 
-    public List<Product> searchProduct(String keyword, Category category) {
-        return productRepository.findByNameContainingAndCategory(keyword, category);
-    }
-
     private void createAvatar(MultipartFile avatar, Product product) {
         try {
             if (isEmptyUploadFile(avatar)) {
@@ -52,8 +51,18 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     }
 
     @Override
-    public List<Product> getListProduct(Request request, Category category) {
-        return this.searchProduct(request.getKeyword(), category);
+    public PageResponse<ProductDetailDto> productsList(ProductParamFilterDto request) {
+        Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() - 1);
+        Page<ProductDetailDto> list = productRepository.searchProduct(request.getKeyword(), request.getIdCategory(), pageable)
+                .map(group -> new ProductDetailDto(
+                        group.getId(),
+                        group.getName(),
+                        group.getDescription(),
+                        group.getAvatar(),
+                        group.getQuantity(),
+                        group.getCategory().getName()
+                ));
+        return PageResponseConverter.convert(list);
     }
 
     @Override

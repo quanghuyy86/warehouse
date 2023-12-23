@@ -39,8 +39,8 @@ public class Supplier extends BaseEntity{
     @Column(name = "note")
     private String note;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "supplier")
-    private Set<WarehouseImport> warehouseImports  = new HashSet<WarehouseImport>();
+//    @OneToMany(cascade = CascadeType.ALL,
+//            fetch = FetchType.LAZY,
+//            mappedBy = "supplier")
+//    private Set<WarehouseImport> warehouseImports  = new HashSet<WarehouseImport>();
 }

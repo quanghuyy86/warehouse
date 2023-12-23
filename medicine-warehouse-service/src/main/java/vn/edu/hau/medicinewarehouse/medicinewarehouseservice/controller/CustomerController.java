@@ -2,19 +2,18 @@ package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseCode;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseGenerator;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CreateCustomerDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.UpdateCustomerDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CustomerService;
 
 @RestController
@@ -26,8 +25,8 @@ public class CustomerController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse<Page<Customer>>> getListCustomers(Request request) {
-        Page<Customer> customerPage = this.customerService.getListCustomer(request);
+    public ResponseEntity<ApiResponse<PageResponse<CustomerDetailDto>>> getListCustomers(CustomerParamFilterDto request) {
+        PageResponse<CustomerDetailDto> customerPage = this.customerService.categoriesList(request);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "get list customer", customerPage), HttpStatus.OK);
     }
 

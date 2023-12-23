@@ -44,13 +44,13 @@ public class Product extends BaseEntity{
     @JoinColumn(name = "category_id", insertable = false, updatable=false)
     private Category category;
 
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "product")
-    private Set<WarehouseImportDetail> warehouseImportDetails = new HashSet<WarehouseImportDetail>();
-
-    @OneToMany(cascade = CascadeType.ALL,
-            fetch = FetchType.LAZY,
-            mappedBy = "product")
-    private Set<WarehouseExportDetail> warehouseExportDetails = new HashSet<WarehouseExportDetail>();
+//    @OneToMany(cascade = CascadeType.ALL,
+//            fetch = FetchType.LAZY,
+//            mappedBy = "product")
+//    private Set<WarehouseImportDetail> warehouseImportDetails = new HashSet<WarehouseImportDetail>();
+//
+//    @OneToMany(cascade = CascadeType.ALL,
+//            fetch = FetchType.LAZY,
+//            mappedBy = "product")
+//    private Set<WarehouseExportDetail> warehouseExportDetails = new HashSet<WarehouseExportDetail>();
 }

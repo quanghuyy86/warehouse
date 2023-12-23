@@ -20,8 +20,5 @@ public class CategoryDetailDto {
     private Long id;
     private String name;
     private String description;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date createdAt;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updatedAt;
+
 }

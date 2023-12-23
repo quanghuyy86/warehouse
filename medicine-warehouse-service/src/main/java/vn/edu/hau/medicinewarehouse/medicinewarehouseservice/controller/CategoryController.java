@@ -2,18 +2,18 @@ package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseCode;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseGenerator;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CreatCategoryDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.UpdateCategoryDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
 @RestController
@@ -26,8 +26,8 @@ public class CategoryController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse<Page<CreatCategoryDto>>> getListCategories(Request request) {
-        Page<CreatCategoryDto> data = categoryService.categoriesList(request);
+    public ResponseEntity<ApiResponse<PageResponse<CategoryDetailDto>>> getListCategories(CategoryParamFilterDto request) {
+        PageResponse<CategoryDetailDto> data = categoryService.categoriesList(request);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "get list category", data), HttpStatus.OK);
     }
 

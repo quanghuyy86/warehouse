@@ -1,20 +1,19 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.impl;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponseConverter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CreatCategoryDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.UpdateCategoryDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Category;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.request.Request;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CategoryRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,14 +25,17 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
         this.categoryRepository = categoryRepository;
     }
 
-    public List<Category> searchCategory(String keyword){
-        return categoryRepository.findByNameContaining(keyword);
-    }
     @Override
-    public Page<CreatCategoryDto> categoriesList(Request request) {
-        List list = this.searchCategory(request.getKeyword());
-        Pageable pageable = PageRequest.of(request.getPage(), request.getPageSize());
-        return new PageImpl<CreatCategoryDto>(list, pageable, this.searchCategory(request.getKeyword()).size());
+    public PageResponse<CategoryDetailDto> categoriesList(CategoryParamFilterDto request) {
+        Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() -1);
+        Page<CategoryDetailDto> medicalGroupList = categoryRepository.searchCategories(request.getKeyword(), pageable)
+                .map(group -> new CategoryDetailDto(
+                        group.getId(),
+                        group.getName(),
+                        group.getDescription()
+                ));
+
+        return PageResponseConverter.convert(medicalGroupList);
     }
     @Override
     public CategoryDetailDto getCategoryById(Long id) {
@@ -42,8 +44,6 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
             categoryDetailDto.setId(category.getId());
             categoryDetailDto.setName(category.getName());
             categoryDetailDto.setDescription(category.getDescription());
-            categoryDetailDto.setCreatedAt(category.getCreatedAt());
-            categoryDetailDto.setUpdatedAt(category.getUpdatedAt());
             return !category.isDeleted() ? categoryDetailDto : null;
     }
 
@@ -62,7 +62,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
     public void updateCategory(Long id, UpdateCategoryDto updateCategoryDto) {
         Optional<String> name = Optional.ofNullable(updateCategoryDto.getName());
         if (name.isPresent() && categoryRepository.existsByName(name.get())) {
-            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
+            throw new ResourceNotFoundException("Tên nhóm thuốc đã tồn tại!");
         }
         categoryRepository.findById(id)
                 .map(group -> {
