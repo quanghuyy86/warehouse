@@ -12,8 +12,9 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.Api
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseCode;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseGenerator;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDetailDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.CreateProductDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductParamFilterDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.UpdateProductDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.ProductService;
 
 @RestController
@@ -33,9 +34,9 @@ public class ProductController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ApiResponse<Void>> createProduct(@Validated @RequestBody ProductDto productDto,
+    public ResponseEntity<ApiResponse<Void>> createProduct(@Validated @RequestBody CreateProductDto createProductDto,
                                                            MultipartFile avatar) {
-        this.productService.createProduct(productDto, avatar);
+        this.productService.createProduct(createProductDto, avatar);
 
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.CREATED, "create product"), HttpStatus.CREATED);
     }
@@ -50,9 +51,9 @@ public class ProductController {
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse<Void>> updateProduct(@PathVariable("id") Long id,
-                                                           @Validated @RequestBody ProductDto productDto,
+                                                           @Validated @RequestBody UpdateProductDto updateProductDto,
                                                            MultipartFile avatar) {
-        this.productService.updateProduct(id, productDto, avatar);
+        this.productService.updateProduct(id, updateProductDto, avatar);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "update product"), HttpStatus.OK);
     }
 

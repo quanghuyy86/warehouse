@@ -7,10 +7,10 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponseConverter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDetailDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.CreateProductDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductParamFilterDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.UpdateProductDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Product;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CategoryRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.ProductRepository;
@@ -53,7 +53,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     @Override
     public PageResponse<ProductDetailDto> productsList(ProductParamFilterDto request) {
         Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() - 1);
-        Page<ProductDetailDto> list = productRepository.searchProduct(request.getKeyword(), request.getIdCategory(), pageable)
+        Page<ProductDetailDto> list = productRepository.searchProduct(request.getKeyword(), request.getCategoryId(), pageable)
                 .map(group -> new ProductDetailDto(
                         group.getId(),
                         group.getName(),
@@ -66,14 +66,17 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     }
 
     @Override
-    public void createProduct(ProductDto productDto, MultipartFile avatar) {
-        categoryRepository.findById(productDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + productDto.getCategoryId()));
+    public void createProduct(CreateProductDto createProductDto, MultipartFile avatar) {
+        categoryRepository.findById(createProductDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + createProductDto.getCategoryId()));
+        if (productRepository.existsByName(createProductDto.getName())) {
+            throw new ResourceNotFoundException("Đã có sản phẩm trong kho");
+        }
         Product product = new Product();
-        product.setName(productDto.getName());
-        product.setDescription(productDto.getDescription());
-        product.setQuantity(productDto.getQuantity());
-        product.setCategoryId(productDto.getCategoryId());
-        product.setCategoryId(productDto.getCategoryId());
+        product.setName(createProductDto.getName());
+        product.setDescription(createProductDto.getDescription());
+        product.setQuantity(createProductDto.getQuantity());
+        product.setCategoryId(createProductDto.getCategoryId());
+        product.setCategoryId(createProductDto.getCategoryId());
         if (isEmptyUploadFile(avatar)) {
             createAvatar(avatar, product);
         }
@@ -81,13 +84,13 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     }
 
     @Override
-    public void updateProduct(Long id, ProductDto productDto, MultipartFile avatar) {
+    public void updateProduct(Long id, UpdateProductDto updateProductDto, MultipartFile avatar) {
         Product product = this.productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found product with id = " + id));
-        categoryRepository.findById(productDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + productDto.getCategoryId()));
-        product.setName(productDto.getName());
-        product.setDescription(productDto.getDescription());
-        product.setQuantity(productDto.getQuantity());
-        product.setCategoryId(productDto.getCategoryId());
+        categoryRepository.findById(updateProductDto.getCategoryId()).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + updateProductDto.getCategoryId()));
+        product.setName(updateProductDto.getName());
+        product.setDescription(updateProductDto.getDescription());
+        product.setQuantity(updateProductDto.getQuantity());
+        product.setCategoryId(updateProductDto.getCategoryId());
         createAvatar(avatar, product);
         this.productRepository.save(product);
     }

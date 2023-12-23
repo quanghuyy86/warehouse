@@ -12,6 +12,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.UpdateSupplierDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Supplier;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.SupplierRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.SupplierService;
@@ -26,6 +27,7 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
         super(supplierRepository);
         this.supplierRepository = supplierRepository;
     }
+
     @Override
     public PageResponse<SupplierDetailDto> suppierList(SupplierParamFilterDto request) {
         Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() - 1);
@@ -40,8 +42,6 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
                 ));
         return PageResponseConverter.convert(list);
     }
-
-
 
 
     @Override
@@ -60,20 +60,26 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
 
     @Override
     public void updateSupplier(Long id, UpdateSupplierDto updateSupplierDto) {
-        Optional<String> name = Optional.ofNullable(updateSupplierDto.getFullName());
-        if (name.isPresent() && supplierRepository.existsByFullName(name.get())) {
-            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
-        }
-        supplierRepository.findById(id)
-                .map(group -> {
-                    Optional.ofNullable(updateSupplierDto.getFullName()).ifPresent(group::setFullName);
-                    Optional.ofNullable(updateSupplierDto.getEmail()).ifPresent(group::setEmail);
-                    Optional.ofNullable(updateSupplierDto.getPhone()).ifPresent(group::setPhone);
-                    Optional.ofNullable(updateSupplierDto.getAddress()).ifPresent(group::setAddress);
-                    Optional.ofNullable(updateSupplierDto.getNote()).ifPresent(group::setNote);
-                    return group;
-                })
-                .map(supplierRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
+//        Optional<String> name = Optional.ofNullable(updateSupplierDto.getFullName());
+//        if (name.isPresent() && supplierRepository.existsByFullName(name.get())) {
+//            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
+//        }
+//        supplierRepository.findById(id)
+//                .map(group -> {
+//                    Optional.ofNullable(updateSupplierDto.getFullName()).ifPresent(group::setFullName);
+//                    Optional.ofNullable(updateSupplierDto.getEmail()).ifPresent(group::setEmail);
+//                    Optional.ofNullable(updateSupplierDto.getPhone()).ifPresent(group::setPhone);
+//                    Optional.ofNullable(updateSupplierDto.getAddress()).ifPresent(group::setAddress);
+//                    Optional.ofNullable(updateSupplierDto.getNote()).ifPresent(group::setNote);
+//                    return group;
+//                })
+//                .map(supplierRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
+        Supplier supplier = this.supplierRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found customer with id = " + id));
+        supplier.setFullName(updateSupplierDto.getFullName());
+        supplier.setPhone(updateSupplierDto.getPhone());
+        supplier.setAddress(updateSupplierDto.getAddress());
+        supplier.setNote(updateSupplierDto.getNote());
+        this.supplierRepository.save(supplier);
 
 
     }

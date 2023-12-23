@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Product;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -13,4 +12,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "(:keyword IS NULL OR s.name LIKE %:keyword% ) " +
             "AND (:categoryId IS NULL OR s.categoryId = :categoryId)")
     Page<Product> searchProduct(@Param("keyword") String keyword,@Param("categoryId") Long categoryId, Pageable pageable);
+
+    Boolean existsByName(String name);
 }

@@ -14,8 +14,6 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Catego
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CategoryRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
-import java.util.Optional;
-
 @Service
 public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> implements CategoryService {
     private final CategoryRepository categoryRepository;
@@ -27,7 +25,7 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
 
     @Override
     public PageResponse<CategoryDetailDto> categoriesList(CategoryParamFilterDto request) {
-        Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() -1);
+        Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() - 1);
         Page<CategoryDetailDto> medicalGroupList = categoryRepository.searchCategories(request.getKeyword(), pageable)
                 .map(group -> new CategoryDetailDto(
                         group.getId(),
@@ -37,19 +35,20 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
 
         return PageResponseConverter.convert(medicalGroupList);
     }
+
     @Override
     public CategoryDetailDto getCategoryById(Long id) {
-            Category category = this.categoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found category with id = " + id));
-            CategoryDetailDto categoryDetailDto = new CategoryDetailDto();
-            categoryDetailDto.setId(category.getId());
-            categoryDetailDto.setName(category.getName());
-            categoryDetailDto.setDescription(category.getDescription());
-            return !category.isDeleted() ? categoryDetailDto : null;
+        Category category = this.categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + id));
+        CategoryDetailDto categoryDetailDto = new CategoryDetailDto();
+        categoryDetailDto.setId(category.getId());
+        categoryDetailDto.setName(category.getName());
+        categoryDetailDto.setDescription(category.getDescription());
+        return !category.isDeleted() ? categoryDetailDto : null;
     }
 
     @Override
     public void createCategory(CreatCategoryDto creatCategoryDto) {
-        if (this.categoryRepository.existsByName(creatCategoryDto.getName())){
+        if (this.categoryRepository.existsByName(creatCategoryDto.getName())) {
             throw new ResourceNotFoundException("Tên nhóm thuốc đã tồn tại!");
         }
         Category categoryEntity = new Category();
@@ -60,22 +59,27 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
 
     @Override
     public void updateCategory(Long id, UpdateCategoryDto updateCategoryDto) {
-        Optional<String> name = Optional.ofNullable(updateCategoryDto.getName());
-        if (name.isPresent() && categoryRepository.existsByName(name.get())) {
-            throw new ResourceNotFoundException("Tên nhóm thuốc đã tồn tại!");
-        }
-        categoryRepository.findById(id)
-                .map(group -> {
-                    Optional.ofNullable(updateCategoryDto.getName()).ifPresent(group::setName);
-                    Optional.ofNullable(updateCategoryDto.getDescription()).ifPresent(group::setDescription);
-                    return group;
-                })
-                .map(categoryRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
+//        Optional<String> name = Optional.ofNullable(updateCategoryDto.getName());
+//        if (name.isPresent() && categoryRepository.existsByName(name.get())) {
+//            throw new ResourceNotFoundException("Tên nhóm thuốc đã tồn tại!");
+//        }
+//        categoryRepository.findById(id)
+//                .map(group -> {
+//                    Optional.ofNullable(updateCategoryDto.getName()).ifPresent(group::setName);
+//                    Optional.ofNullable(updateCategoryDto.getDescription()).ifPresent(group::setDescription);
+//                    return group;
+//                })
+//                .map(categoryRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
+        category.setName(updateCategoryDto.getName());
+        category.setDescription(updateCategoryDto.getDescription());
+        categoryRepository.save(category);
     }
+
 
     @Override
     public void deleteCategoryById(Long id) {
-        Category category = this.categoryRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Not found category with id = " + id));
+        Category category = this.categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found category with id = " + id));
         category.setDeleted(true);
         this.repository.save(category);
     }

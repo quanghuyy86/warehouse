@@ -11,5 +11,5 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.Pag
 @NoArgsConstructor
 public class ProductParamFilterDto extends PagingOption {
     private String keyword;
-    private Long idCategory;
+    private Long categoryId;
 }

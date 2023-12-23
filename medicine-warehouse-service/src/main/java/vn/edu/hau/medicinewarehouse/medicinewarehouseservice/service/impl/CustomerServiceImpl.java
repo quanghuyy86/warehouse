@@ -56,21 +56,26 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
 
     @Override
     public void updateCustomer(Long id, UpdateCustomerDto updateCustomerDto) {
-        Optional<String> name = Optional.ofNullable(updateCustomerDto.getFullName());
-        if (name.isPresent() && customerRepository.existsByFullName(name.get())) {
-            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
-        }
-        customerRepository.findById(id)
-                .map(group -> {
-                    Optional.ofNullable(updateCustomerDto.getFullName()).ifPresent(group::setFullName);
-                    Optional.ofNullable(updateCustomerDto.getEmail()).ifPresent(group::setEmail);
-                    Optional.ofNullable(updateCustomerDto.getPhone()).ifPresent(group::setPhone);
-                    Optional.ofNullable(updateCustomerDto.getAddress()).ifPresent(group::setAddress);
-                    Optional.ofNullable(updateCustomerDto.getNote()).ifPresent(group::setNote);
-                    return group;
-                })
-                .map(customerRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
-
+//        Optional<String> name = Optional.ofNullable(updateCustomerDto.getFullName());
+//        if (name.isPresent() && customerRepository.existsByFullName(name.get())) {
+//            throw new ResourceNotFoundException("Tên nhóm khám đã tồn tại!");
+//        }
+//        customerRepository.findById(id)
+//                .map(group -> {
+//                    Optional.ofNullable(updateCustomerDto.getFullName()).ifPresent(group::setFullName);
+//                    Optional.ofNullable(updateCustomerDto.getEmail()).ifPresent(group::setEmail);
+//                    Optional.ofNullable(updateCustomerDto.getPhone()).ifPresent(group::setPhone);
+//                    Optional.ofNullable(updateCustomerDto.getAddress()).ifPresent(group::setAddress);
+//                    Optional.ofNullable(updateCustomerDto.getNote()).ifPresent(group::setNote);
+//                    return group;
+//                })
+//                .map(customerRepository::save).orElseThrow(() -> new ResourceNotFoundException("Not found medical group with id = " + id));
+        Customer customer = this.customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found customer with id = " + id));
+        customer.setFullName(updateCustomerDto.getFullName());
+        customer.setPhone(updateCustomerDto.getPhone());
+        customer.setAddress(updateCustomerDto.getAddress());
+        customer.setNote(updateCustomerDto.getNote());
+        this.customerRepository.save(customer);
     }
 
     @Override
