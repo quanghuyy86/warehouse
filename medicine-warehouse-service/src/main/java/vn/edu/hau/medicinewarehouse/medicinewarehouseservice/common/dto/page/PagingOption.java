@@ -20,7 +20,7 @@ public class PagingOption {
     private int pageNumber;
 
     public PagingOption() {
-        this.pageSize = 20;
+        this.pageSize = 10;
         this.pageNumber = 1;
     }
 

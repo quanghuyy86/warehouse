@@ -73,6 +73,7 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
         Customer customer = this.customerRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found customer with id = " + id));
         customer.setFullName(updateCustomerDto.getFullName());
         customer.setPhone(updateCustomerDto.getPhone());
+        customer.setEmail(updateCustomerDto.getEmail());
         customer.setAddress(updateCustomerDto.getAddress());
         customer.setNote(updateCustomerDto.getNote());
         this.customerRepository.save(customer);
