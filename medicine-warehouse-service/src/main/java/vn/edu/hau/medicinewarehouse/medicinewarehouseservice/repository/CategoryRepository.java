@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT s FROM Category s WHERE " +
-            "(:keyword IS NULL OR s.name LIKE %:keyword%) ")
+            "(:keyword IS NULL OR s.name LIKE %:keyword%) AND s.isDeleted = false")
     Page<Category> searchCategories(@Param("keyword") String keyword, Pageable pageable);
     boolean existsByName(String name);
 

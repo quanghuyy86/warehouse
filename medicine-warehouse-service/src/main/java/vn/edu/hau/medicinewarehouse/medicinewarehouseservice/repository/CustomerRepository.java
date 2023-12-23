@@ -13,7 +13,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     @Query("SELECT s FROM Customer s WHERE " +
             "(:name IS NULL OR s.fullName LIKE %:name% ) " +
             "AND (:phone IS NULL OR s.phone LIKE %:phone%) " +
-            "AND (:email IS NULL OR s.email LIKE %:email%) ")
+            "AND (:email IS NULL OR s.email LIKE %:email%) AND s.isDeleted = false")
     Page<Customer> searchCustomer(@Param("name") String name,@Param("phone") String phone,@Param("email") String email, Pageable pageable);
     Boolean existsByFullName(String fullName);
 }
