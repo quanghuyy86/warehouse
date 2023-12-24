@@ -14,13 +14,17 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CreatCategoryDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.UpdateCategoryDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Category;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
+
+import java.util.Comparator;
+import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
 @RequiredArgsConstructor
 @Slf4j
-public class CategoryController {
+public class CategoryController{
 
     private final CategoryService categoryService;
 
@@ -58,5 +62,13 @@ public class CategoryController {
     public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable("id") Long id) {
         categoryService.deleteCategoryById(id);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.NO_CONTENT, "delete category"), HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/get-all")
+    public ResponseEntity<Object> getAll() {
+        List<Category> entities = categoryService.findAll();
+        entities.sort(Comparator.comparing(Category::getName));
+
+        return new ResponseEntity<>(entities, HttpStatus.OK);
     }
 }

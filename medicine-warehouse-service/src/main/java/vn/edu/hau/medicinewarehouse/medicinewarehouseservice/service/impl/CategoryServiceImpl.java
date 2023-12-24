@@ -14,6 +14,8 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Catego
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CategoryRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CategoryService;
 
+import java.util.List;
+
 @Service
 public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> implements CategoryService {
     private final CategoryRepository categoryRepository;
@@ -34,6 +36,11 @@ public class CategoryServiceImpl extends BaseServiceImpl<Category, Long> impleme
                 ));
 
         return PageResponseConverter.convert(medicalGroupList);
+    }
+
+    @Override
+    public List<Category> findAll() {
+        return this.categoryRepository.findAll();
     }
 
     @Override

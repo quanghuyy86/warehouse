@@ -7,8 +7,11 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.UpdateCategoryDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Category;
 
+import java.util.List;
+
 public interface CategoryService extends BaseService<Category, Long>{
     PageResponse<CategoryDetailDto> categoriesList(CategoryParamFilterDto request);
+    List<Category> findAll();
     CategoryDetailDto getCategoryById(Long id);
     void createCategory(CreatCategoryDto creatCategoryDto);
     void updateCategory(Long id, UpdateCategoryDto updateCategoryDto);
