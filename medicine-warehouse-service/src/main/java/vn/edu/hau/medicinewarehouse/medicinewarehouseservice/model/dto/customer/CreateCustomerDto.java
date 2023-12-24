@@ -19,11 +19,11 @@ public class CreateCustomerDto {
     private String fullName;
     @NotNull(message = "bắt buộc nhập số điện thoại")
     @Size(min = 1, max = 500)
-    private String email;
+    private String phone;
     @NotNull(message = "bắt buộc nhập email")
     @Email(message = "Không đúng định dạng email")
     @Size(min = 1, max = 500)
-    private String phone;
+    private String email;
     @NotNull(message = "bắt buộc nhập địa chỉ")
     @Size(min = 1, max = 500)
     private String address;

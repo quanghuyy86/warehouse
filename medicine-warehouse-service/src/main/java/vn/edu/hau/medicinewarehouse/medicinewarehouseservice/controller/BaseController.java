@@ -18,25 +18,4 @@ public abstract class BaseController<T, ID> {
         return new ResponseEntity<>(baseService.getAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/get-by-id/{id}")
-    public ResponseEntity<Object> getById(@PathVariable("id") ID id) {
-        return new ResponseEntity<>(baseService.getById(id), HttpStatus.OK);
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<Object> create(@Validated @RequestBody T t) {
-        return new ResponseEntity<>(baseService.createOrUpdate(null, t), HttpStatus.CREATED);
-    }
-
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Object> update(@PathVariable("id") ID id,
-                                         @Validated @RequestBody T t) {
-        return new ResponseEntity<>(baseService.createOrUpdate(id, t), HttpStatus.OK);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> delete(@PathVariable("id") ID id) {
-        return new ResponseEntity<>(baseService.deleteById(id), HttpStatus.NO_CONTENT);
-    }
-
 }
