@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.BaseEntity;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Supplier;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.user.User;
@@ -20,11 +21,15 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Where(clause = "is_delete = 0")
 public class WarehouseImport extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @Column(name = "code")
+    private String code;
 
     @Column(name = "time", nullable = true)
     @JsonIgnore
@@ -34,12 +39,18 @@ public class WarehouseImport extends BaseEntity {
     @Column(name = "note")
     private String note;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "supplier_id")
+    private Long supplierId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id",insertable = false, updatable=false)
     private User user; //nhân viên tạo đơn
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "supplier_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "supplier_id", insertable = false, updatable=false)
     private Supplier supplier;
 
     @OneToMany(fetch = FetchType.LAZY,

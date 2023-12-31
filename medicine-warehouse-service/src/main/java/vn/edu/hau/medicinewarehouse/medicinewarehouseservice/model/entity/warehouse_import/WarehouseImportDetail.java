@@ -20,15 +20,21 @@ public class WarehouseImportDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "warehouse_inport_id")
-    private WarehouseImport warehouseImport; //id đơn nhập
+    @Column(name = "warehouse_inport_id")
+    private Long warehouseImportId;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    private Product product; //id đơn thuốc
+    @Column(name = "product_id")
+    private Long productId;
 
     private Long quantity; // số lượng nhập
 
     private double price; //giá nhập
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "warehouse_inport_id", insertable = false, updatable = false)
+    private WarehouseImport warehouseImport; //id đơn nhập
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", insertable = false, updatable = false)
+    private Product product; //id đơn thuốc
 }
