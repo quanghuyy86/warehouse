@@ -11,11 +11,14 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.Pag
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseCode;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseGenerator;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.CreateSupplierDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.UpdateSupplierDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.SupplierService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/suppliers")
@@ -57,5 +60,11 @@ public class SupplierController {
     public ResponseEntity<Object> deleteById(@PathVariable Long id) {
         this.supplierService.deleteSupplierById(id);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.NO_CONTENT, "Delete supplier"), HttpStatus.OK);
+    }
+    @GetMapping("get-all")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<List<SupplierDetailDto>>> getAllProduct() {
+        List<SupplierDetailDto> entities = supplierService.findAll();
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "get product", entities), HttpStatus.OK);
     }
 }

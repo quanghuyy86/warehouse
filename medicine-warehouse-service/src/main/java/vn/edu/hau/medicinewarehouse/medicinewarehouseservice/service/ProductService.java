@@ -8,6 +8,8 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.P
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.UpdateProductDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Product;
 
+import java.util.List;
+
 public interface ProductService extends BaseService<Product, Long> {
     PageResponse<ProductDetailDto> productsList(ProductParamFilterDto request);
 
@@ -18,4 +20,6 @@ public interface ProductService extends BaseService<Product, Long> {
     ProductDetailDto getProductById(Long id);
 
     void deleteProductById(Long id);
+
+    List<ProductDetailDto> findAll();
 }

@@ -15,7 +15,10 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.P
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.CreateProductDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.UpdateProductDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Product;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.ProductService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -62,5 +65,12 @@ public class ProductController {
     public ResponseEntity<ApiResponse<Void>> deleteById(@PathVariable("id") Long id) {
         this.productService.deleteProductById(id);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "delete product"), HttpStatus.OK);
+    }
+
+    @GetMapping("get-all")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<List<ProductDetailDto>>> getAllProduct() {
+        List<ProductDetailDto> entities = productService.findAll();
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "get product", entities), HttpStatus.OK);
     }
 }

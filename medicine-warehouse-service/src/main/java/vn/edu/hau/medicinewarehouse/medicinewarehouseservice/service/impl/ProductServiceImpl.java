@@ -20,7 +20,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implements ProductService {
@@ -104,7 +108,7 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
         productDetailDto.setName(product.getName());
         productDetailDto.setQuantity(product.getQuantity());
         productDetailDto.setDescription(product.getDescription());
-        productDetailDto.setCatgoryName(product.getCategory().getName());
+        productDetailDto.setCategoryName(product.getCategory().getName());
         return productDetailDto;
     }
 
@@ -113,5 +117,22 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
         Product product = this.productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found product with id = " + id));
         product.setDeleted(true);
         this.productRepository.save(product);
+    }
+
+    @Override
+    public List<ProductDetailDto> findAll() {
+
+        return productRepository.findAll()
+                .stream()
+                .map(haha -> new ProductDetailDto(
+                        haha.getId(),
+                        haha.getName(),
+                        haha.getAvatar(),
+                        haha.getDescription(),
+                        haha.getQuantity(),
+                        haha.getCategory() != null ? haha.getCategory().getName() : null // Kiểm tra null để tránh NullPointerException
+                ))
+                .sorted(Comparator.comparing(ProductDetailDto::getName)) // Sắp xếp sau khi chuyển đổi
+                .collect(Collectors.toList());
     }
 }
