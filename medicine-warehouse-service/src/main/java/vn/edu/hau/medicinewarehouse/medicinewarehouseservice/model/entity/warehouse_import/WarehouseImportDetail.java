@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.BaseEntity;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Product;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
@@ -15,6 +16,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.wareho
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_warehouse_inport_detail")
+@Where(clause = "is_delete = 0")
 public class WarehouseImportDetail extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -19,6 +19,4 @@ public class ResponseWarehouseImportDto {
     private String supplierName;
     private List<ResponseWarehouseImportDetailDto> detailImport = new ArrayList<>();
 
-    public ResponseWarehouseImportDto(Long id, String code, String note, String fullName) {
-    }
 }

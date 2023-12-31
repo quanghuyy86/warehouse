@@ -11,5 +11,6 @@ public interface WarehouseImportService {
 
     ResponseWarehouseImportDto detailImport(Long id);
     PageResponse<ResponseWarehouseImportDto> getListWarehouseImport(WarehouseImportFilter filter);
+    void deleteImport(Long id);
 
 }

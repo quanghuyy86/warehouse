@@ -102,13 +102,38 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
     public PageResponse<ResponseWarehouseImportDto> getListWarehouseImport(WarehouseImportFilter request) {
         Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() - 1);
         Page<ResponseWarehouseImportDto> responseWarehouseImportDtos = this.importRepository.searchWarehouseImport(request.getKeyword(), pageable)
-                .map(detail -> new ResponseWarehouseImportDto(
-                        detail.getId(),
-                        detail.getCode(),
-                        detail.getNote(),
-                        detail.getSupplier().getFullName()
-                ));
+                .map(detail -> {
+
+                    List<WarehouseImportDetail> warehouseImportDetails = importDetailRepository.findAllByWarehouseImportId( detail.getId());
+                    List<ResponseWarehouseImportDetailDto> responseWarehouseImportDetailDtos = new ArrayList<>();
+                    for (WarehouseImportDetail wow : warehouseImportDetails){
+                        ResponseWarehouseImportDetailDto dto = convertToResponseDto(wow);
+                        responseWarehouseImportDetailDtos.add(dto);
+                    }
+
+                    return new ResponseWarehouseImportDto(
+                            detail.getId(),
+                            detail.getCode(),
+                            detail.getNote(),
+                            detail.getSupplier().getFullName(),
+                            responseWarehouseImportDetailDtos);
+                        }
+                );
         return PageResponseConverter.convert(responseWarehouseImportDtos);
+    }
+
+    @Override
+    @Transactional
+    public void deleteImport(Long id) {
+        WarehouseImport warehouseImport = this.importRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Không tìm thấy id nhập kho = " + id));
+        warehouseImport.setDeleted(true);
+        importRepository.save(warehouseImport);
+        List<WarehouseImportDetail> warehouseImportDetails = this.importDetailRepository.findAllByWarehouseImportId(warehouseImport.getId());
+        for (WarehouseImportDetail importDetail : warehouseImportDetails){
+            importDetail.setDeleted(true);
+            importDetailRepository.save(importDetail);
+        }
+
     }
 
     private ResponseWarehouseImportDetailDto convertToResponseDto(WarehouseImportDetail warehouseImportDetail) {

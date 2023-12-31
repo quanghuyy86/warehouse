@@ -51,5 +51,12 @@ public class WarehouseImportController {
         PageResponse<ResponseWarehouseImportDto> list = this.warehouseImportService.getListWarehouseImport(request);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Search list medical group", list), HttpStatus.OK);
     }
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<Void>> deleteMedicalRegister(@PathVariable("id") Long id) {
+        warehouseImportService.deleteImport(id);
+        return new ResponseEntity<>(
+                ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Deleted"), HttpStatus.OK);
+    }
 
 }
