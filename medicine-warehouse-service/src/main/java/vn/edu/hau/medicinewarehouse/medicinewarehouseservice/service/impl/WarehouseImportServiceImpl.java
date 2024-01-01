@@ -143,6 +143,7 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
 
         dto.setIdImportDetail(warehouseImportDetail.getWarehouseImportId());
         dto.setProductName(warehouseImportDetail.getProduct().getName());
+        dto.setId(warehouseImportDetail.getProduct().getId());
         dto.setQuantity(warehouseImportDetail.getQuantity());
         dto.setPrice(warehouseImportDetail.getPrice());
 

@@ -10,11 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseWarehouseImportDetailDto {
+    private Long id;
     private Long idImportDetail;
-
     private String productName;
-
     private Long quantity; // số lượng nhập
-
     private double price; //giá nhập
 }
