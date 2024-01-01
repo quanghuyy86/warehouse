@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Category;
 
 @Getter
 @Setter
@@ -15,5 +17,5 @@ public class ProductDetailDto {
     private String avatar;
     private String description;
     private Long quantity;
-    private String categoryName;
+    private CategoryDetailDto category;
 }

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponseConverter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.category.CategoryDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.CreateProductDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.product.ProductParamFilterDto;
@@ -57,15 +58,23 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     @Override
     public PageResponse<ProductDetailDto> productsList(ProductParamFilterDto request) {
         Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() - 1);
+
         Page<ProductDetailDto> list = productRepository.searchProduct(request.getKeyword(), request.getCategoryId(), pageable)
-                .map(group -> new ProductDetailDto(
-                        group.getId(),
-                        group.getName(),
-                        group.getDescription(),
-                        group.getAvatar(),
-                        group.getQuantity(),
-                        group.getCategory().getName()
-                ));
+                .map(group ->{
+                    CategoryDetailDto  categoryDetailDto = new CategoryDetailDto();
+                    categoryDetailDto.setId(group.getCategory().getId());
+                    categoryDetailDto.setName(group.getCategory().getName());
+
+                    return new ProductDetailDto(
+                            group.getId(),
+                            group.getName(),
+                            group.getDescription(),
+                            group.getAvatar(),
+                            group.getQuantity(),
+                            categoryDetailDto
+                    );
+
+                });
         return PageResponseConverter.convert(list);
     }
 
@@ -103,12 +112,17 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
     @Override
     public ProductDetailDto getProductById(Long id) {
         Product product = this.productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found Product with id = " + id));
+
+        CategoryDetailDto  categoryDetailDto = new CategoryDetailDto();
+        categoryDetailDto.setId(product.getCategory().getId());
+        categoryDetailDto.setName(product.getCategory().getName());
+
         ProductDetailDto productDetailDto = new ProductDetailDto();
         productDetailDto.setId(product.getId());
         productDetailDto.setName(product.getName());
         productDetailDto.setQuantity(product.getQuantity());
         productDetailDto.setDescription(product.getDescription());
-        productDetailDto.setCategoryName(product.getCategory().getName());
+        productDetailDto.setCategory(categoryDetailDto);
         return productDetailDto;
     }
 
@@ -124,14 +138,21 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
 
         return productRepository.findAll()
                 .stream()
-                .map(haha -> new ProductDetailDto(
-                        haha.getId(),
-                        haha.getName(),
-                        haha.getAvatar(),
-                        haha.getDescription(),
-                        haha.getQuantity(),
-                        haha.getCategory() != null ? haha.getCategory().getName() : null // Kiểm tra null để tránh NullPointerException
-                ))
+                .map(haha -> {
+                    CategoryDetailDto categoryDetailDto = new CategoryDetailDto();
+                    categoryDetailDto.setId(haha.getCategory().getId());
+                    categoryDetailDto.setName(haha.getCategory().getName());
+
+                    return  new ProductDetailDto(
+                            haha.getId(),
+                            haha.getName(),
+                            haha.getAvatar(),
+                            haha.getDescription(),
+                            haha.getQuantity(),
+                            categoryDetailDto
+                    );
+
+                })
                 .sorted(Comparator.comparing(ProductDetailDto::getName)) // Sắp xếp sau khi chuyển đổi
                 .collect(Collectors.toList());
     }
