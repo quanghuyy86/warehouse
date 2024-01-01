@@ -93,6 +93,7 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
                 warehouseImport.getId(),
                 warehouseImport.getCode(),
                 warehouseImport.getNote(),
+                warehouseImport.getSupplier().getId(),
                 warehouseImport.getSupplier().getFullName(),
                 responseWarehouseImportDetailDtos
         );
@@ -115,6 +116,7 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
                             detail.getId(),
                             detail.getCode(),
                             detail.getNote(),
+                            detail.getSupplier().getId(),
                             detail.getSupplier().getFullName(),
                             responseWarehouseImportDetailDtos);
                         }

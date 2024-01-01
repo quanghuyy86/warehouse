@@ -16,6 +16,7 @@ public class ResponseWarehouseImportDto {
     private Long idWarehouseImport;
     private String code;
     private String note;
+    private Long supplierId;
     private String supplierName;
     private List<ResponseWarehouseImportDetailDto> detailImport = new ArrayList<>();
 
