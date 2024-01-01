@@ -14,7 +14,6 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Catego
 public class ProductDetailDto {
     private Long id;
     private String name;
-    private String avatar;
     private String description;
     private Long quantity;
     private CategoryDetailDto category;

@@ -69,7 +69,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
                             group.getId(),
                             group.getName(),
                             group.getDescription(),
-                            group.getAvatar(),
                             group.getQuantity(),
                             categoryDetailDto
                     );
@@ -146,7 +145,6 @@ public class ProductServiceImpl extends BaseServiceImpl<Product, Long> implement
                     return  new ProductDetailDto(
                             haha.getId(),
                             haha.getName(),
-                            haha.getAvatar(),
                             haha.getDescription(),
                             haha.getQuantity(),
                             categoryDetailDto
