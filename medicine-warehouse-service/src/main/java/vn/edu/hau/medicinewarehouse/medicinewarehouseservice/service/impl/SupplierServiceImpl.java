@@ -35,8 +35,8 @@ public class SupplierServiceImpl extends BaseServiceImpl<Supplier, Long> impleme
                 .map(group -> new SupplierDetailDto(
                         group.getId(),
                         group.getFullName(),
-                        group.getEmail(),
                         group.getPhone(),
+                        group.getEmail(),
                         group.getAddress(),
                         group.getNote()
                 ));
