@@ -45,6 +45,9 @@ public class WarehouseImport extends BaseEntity {
     @Column(name = "supplier_id")
     private Long supplierId;
 
+    @Column(name = "total_price")
+    private Double totalPrice;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",insertable = false, updatable=false)
     private User user; //nhân viên tạo đơn

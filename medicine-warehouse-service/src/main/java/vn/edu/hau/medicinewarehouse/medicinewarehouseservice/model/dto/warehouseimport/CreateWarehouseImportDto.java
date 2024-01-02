@@ -26,5 +26,8 @@ public class CreateWarehouseImportDto {
     @NotNull(message = "Bắt buộc điền tên khách hàng")
     private Long supplierId;
 
-    List<CreateWarehouseImportDetailDto> createWarehouseImportDetailDto = new ArrayList<>();
+    @NotNull(message = "Bắt buộc thêm sản phẩm")
+    private List<CreateWarehouseImportDetailDto> createWarehouseImportDetailDto = new ArrayList<>();
+
+    private Double totalPrice;
 }
