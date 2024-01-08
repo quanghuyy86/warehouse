@@ -21,15 +21,22 @@ public class WarehouseExportDetail extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "warehouse_export_id")
-    private WarehouseExport warehouseExport; //id đơn xuất
+    @Column(name = "warehouse_export_id")
+    private Long warehouseExportId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
-    private Product product; //id đơn thuốc
+    @JoinColumn(name = "warehouse_export_id", updatable = false, insertable = false)
+    private WarehouseExport warehouseExport;
 
-    private Long quantity; // số lượng bán
+    @Column(name = "product_id")
+    private Long productId;
+
+    @Column(name = "quantity")
+    private Long quantity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", updatable = false, insertable = false)
+    private Product product;
 
     private double price; //giá bán
 }

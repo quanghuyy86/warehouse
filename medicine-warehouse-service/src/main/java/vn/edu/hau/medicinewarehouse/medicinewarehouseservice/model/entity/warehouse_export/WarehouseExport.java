@@ -9,7 +9,6 @@ import lombok.Setter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.BaseEntity;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.user.User;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImportDetail;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -27,6 +26,9 @@ public class WarehouseExport extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "code")
+    private String code;
+
     @Column(name = "time", nullable = true)
     @JsonIgnore
     @Temporal(TemporalType.TIMESTAMP)
@@ -35,13 +37,16 @@ public class WarehouseExport extends BaseEntity {
     @Column(name = "note")
     private String note;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user; //nhân viên tạo đơn
+    @Column(name = "customer_id")
+    private Long customerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
-    private Customer customer; //nhân viên tạo đơn
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id", updatable = false, insertable = false)
+    private Customer customer;
 
     @OneToMany(fetch = FetchType.LAZY,
             mappedBy = "warehouseExport")
