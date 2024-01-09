@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.BaseEntity;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseExport;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,11 +38,11 @@ public class User extends BaseEntity {
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "user")
-    private Set<WarehouseImport> warehouseImports = new HashSet<WarehouseImport>();
+    private Set<WarehouseExport> warehouseImports = new HashSet<WarehouseExport>();
 
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "user")
-    private Set<WarehouseExport> warehouseExports  = new HashSet<WarehouseExport>();
+    private Set<vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport> warehouseExports  = new HashSet<vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport>();
 
 }

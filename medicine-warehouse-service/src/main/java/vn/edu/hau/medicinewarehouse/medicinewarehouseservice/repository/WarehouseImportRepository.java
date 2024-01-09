@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseExport;
 @Repository
-public interface WarehouseImportRepository extends JpaRepository<WarehouseImport, Long> {
+public interface WarehouseImportRepository extends JpaRepository<WarehouseExport, Long> {
     boolean existsByCode(String code);
 
-    @Query("SELECT s FROM WarehouseImport s WHERE " +
+    @Query("SELECT s FROM WarehouseExport s WHERE " +
             "(:keyword IS NULL OR s.code LIKE %:keyword%)")
-    Page<WarehouseImport> searchWarehouseImport(@Param("keyword") String keyword, Pageable pageable);
+    Page<WarehouseExport> searchWarehouseImport(@Param("keyword") String keyword, Pageable pageable);
 }

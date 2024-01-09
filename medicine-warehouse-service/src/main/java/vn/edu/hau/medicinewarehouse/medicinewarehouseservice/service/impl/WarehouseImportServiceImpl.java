@@ -8,7 +8,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.Pag
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponseConverter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.*;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseExport;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImportDetail;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.ProductRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.SupplierRepository;
@@ -33,21 +33,22 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
         this.importRepository = warehouseImportRepository;
         this.importDetailRepository = warehouseImportDetailRepository;
     }
+
     @Transactional
     @Override
     public void createWarehouseImport(CreateWarehouseImportDto importDto) {
-        if(importRepository.existsByCode(importDto.getCode())){
+        if (importRepository.existsByCode(importDto.getCode())) {
             throw new ResourceNotFoundException("Mã nhập kho đã tồn tại!");
         }
-        supplierRepository.findById(importDto.getSupplierId()).orElseThrow(()-> new ResourceNotFoundException("Không tìm thấy nhà cung cấp có id = " + importDto.getSupplierId()));
-        WarehouseImport warehouseImport = new WarehouseImport();
+        supplierRepository.findById(importDto.getSupplierId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhà cung cấp có id = " + importDto.getSupplierId()));
+        WarehouseExport warehouseImport = new WarehouseExport();
         warehouseImport.setCode(importDto.getCode());
         warehouseImport.setTime(new Date());
         warehouseImport.setNote(importDto.getNote());
         warehouseImport.setSupplierId(importDto.getSupplierId());
-        WarehouseImport entity = this.importRepository.save(warehouseImport);
+        WarehouseExport entity = this.importRepository.save(warehouseImport);
         List<CreateWarehouseImportDetailDto> detailDtos = importDto.getCreateWarehouseImportDetailDto();
-        if(importDto.getCreateWarehouseImportDetailDto() != null && !importDto.getCreateWarehouseImportDetailDto().isEmpty()){
+        if (importDto.getCreateWarehouseImportDetailDto() != null && !importDto.getCreateWarehouseImportDetailDto().isEmpty()) {
             createListImport(entity, detailDtos);
         }
     }
@@ -55,9 +56,9 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
     @Transactional
     @Override
     public void updateWarehouseImport(Long importId, CreateWarehouseImportDto importDto) {
-        WarehouseImport existingImport = importRepository.findById(importId)
+        WarehouseExport existingImport = importRepository.findById(importId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn nhập kho với ID: " + importId));
-        supplierRepository.findById(importDto.getSupplierId()).orElseThrow(()-> new ResourceNotFoundException("Không tìm thấy nhà cung cấp có id = " + importDto.getSupplierId()));
+        supplierRepository.findById(importDto.getSupplierId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhà cung cấp có id = " + importDto.getSupplierId()));
 
         // Kiểm tra xem mã mới có trùng với mã của đơn nhập kho khác không
         if (existingImport.getCode().equals(importDto.getCode()) && importRepository.existsByCode(importDto.getCode())) {
@@ -68,7 +69,7 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
         existingImport.setCode(importDto.getCode());
         existingImport.setNote(importDto.getNote());
         existingImport.setSupplierId(importDto.getSupplierId());
-        WarehouseImport updatedImport = importRepository.save(existingImport);
+        WarehouseExport updatedImport = importRepository.save(existingImport);
 
         // Xóa chi tiết cũ và thêm chi tiết mới
         importDetailRepository.deleteByWarehouseImportId(importId);
@@ -81,10 +82,10 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
 
     @Override
     public ResponseWarehouseImportDto detailImport(Long idWarehouseImport) {
-        WarehouseImport warehouseImport = importRepository.findById(idWarehouseImport).orElseThrow(() -> new ResourceNotFoundException("không tìm thấy id nhập kho = " + idWarehouseImport));
+        WarehouseExport warehouseImport = importRepository.findById(idWarehouseImport).orElseThrow(() -> new ResourceNotFoundException("không tìm thấy id nhập kho = " + idWarehouseImport));
         List<WarehouseImportDetail> warehouseImportDetails = importDetailRepository.findAllByWarehouseImportId(idWarehouseImport);
         List<ResponseWarehouseImportDetailDto> responseWarehouseImportDetailDtos = new ArrayList<>();
-        for (WarehouseImportDetail detail : warehouseImportDetails){
+        for (WarehouseImportDetail detail : warehouseImportDetails) {
             ResponseWarehouseImportDetailDto dto = convertToResponseDto(detail);
             responseWarehouseImportDetailDtos.add(dto);
         }
@@ -105,20 +106,20 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
         Page<ResponseWarehouseImportDto> responseWarehouseImportDtos = this.importRepository.searchWarehouseImport(request.getKeyword(), pageable)
                 .map(detail -> {
 
-                    List<WarehouseImportDetail> warehouseImportDetails = importDetailRepository.findAllByWarehouseImportId( detail.getId());
-                    List<ResponseWarehouseImportDetailDto> responseWarehouseImportDetailDtos = new ArrayList<>();
-                    for (WarehouseImportDetail wow : warehouseImportDetails){
-                        ResponseWarehouseImportDetailDto dto = convertToResponseDto(wow);
-                        responseWarehouseImportDetailDtos.add(dto);
-                    }
+                            List<WarehouseImportDetail> warehouseImportDetails = importDetailRepository.findAllByWarehouseImportId(detail.getId());
+                            List<ResponseWarehouseImportDetailDto> responseWarehouseImportDetailDtos = new ArrayList<>();
+                            for (WarehouseImportDetail wow : warehouseImportDetails) {
+                                ResponseWarehouseImportDetailDto dto = convertToResponseDto(wow);
+                                responseWarehouseImportDetailDtos.add(dto);
+                            }
 
-                    return new ResponseWarehouseImportDto(
-                            detail.getId(),
-                            detail.getCode(),
-                            detail.getNote(),
-                            detail.getSupplier().getId(),
-                            detail.getSupplier().getFullName(),
-                            responseWarehouseImportDetailDtos);
+                            return new ResponseWarehouseImportDto(
+                                    detail.getId(),
+                                    detail.getCode(),
+                                    detail.getNote(),
+                                    detail.getSupplier().getId(),
+                                    detail.getSupplier().getFullName(),
+                                    responseWarehouseImportDetailDtos);
                         }
                 );
         return PageResponseConverter.convert(responseWarehouseImportDtos);
@@ -127,11 +128,11 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
     @Override
     @Transactional
     public void deleteImport(Long id) {
-        WarehouseImport warehouseImport = this.importRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Không tìm thấy id nhập kho = " + id));
+        WarehouseExport warehouseImport = this.importRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy id nhập kho = " + id));
         warehouseImport.setDeleted(true);
         importRepository.save(warehouseImport);
         List<WarehouseImportDetail> warehouseImportDetails = this.importDetailRepository.findAllByWarehouseImportId(warehouseImport.getId());
-        for (WarehouseImportDetail importDetail : warehouseImportDetails){
+        for (WarehouseImportDetail importDetail : warehouseImportDetails) {
             importDetail.setDeleted(true);
             importDetailRepository.save(importDetail);
         }
@@ -150,10 +151,10 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
         return dto;
     }
 
-    private void createListImport(WarehouseImport updatedImport, List<CreateWarehouseImportDetailDto> detailDtos) {
+    private void createListImport(WarehouseExport updatedImport, List<CreateWarehouseImportDetailDto> detailDtos) {
         for (CreateWarehouseImportDetailDto detailDto : detailDtos) {
             WarehouseImportDetail detail = new WarehouseImportDetail();
-            productRepository.findById(detailDto.getProductId()).orElseThrow(()-> new ResourceNotFoundException("Không tìm thấy product có id = " + detailDto.getProductId()));
+            productRepository.findById(detailDto.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy product có id = " + detailDto.getProductId()));
             detail.setWarehouseImportId(updatedImport.getId());
             detail.setProductId(detailDto.getProductId());
             detail.setQuantity(detailDto.getQuantity());

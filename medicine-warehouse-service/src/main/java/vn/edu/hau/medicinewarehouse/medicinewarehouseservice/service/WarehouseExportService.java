@@ -4,4 +4,8 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouse
 
 public interface WarehouseExportService {
     void createWarehouseExport(CreateWarehouseExport createWarehouseExport);
+
+    void updateWarehouseExport(Long id, CreateWarehouseExport warehouseExport);
+
+    void deleteExport(Long id);
 }

@@ -14,7 +14,10 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.UpdateCustomerDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CustomerService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/customers")
@@ -57,5 +60,12 @@ public class CustomerController {
     public ResponseEntity<ApiResponse<Void>> deleteById(@PathVariable Long id) {
         this.customerService.deleteCustomerById(id);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.NO_CONTENT, "delete customer"), HttpStatus.OK);
+    }
+
+    @GetMapping("get-all")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<List<CustomerDetailDto>>> getAllProduct() {
+        List<CustomerDetailDto> entities = customerService.findAll();
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "get customer", entities), HttpStatus.OK);
     }
 }

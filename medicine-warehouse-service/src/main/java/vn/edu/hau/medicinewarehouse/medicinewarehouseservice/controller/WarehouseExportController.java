@@ -18,11 +18,26 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.WarehouseEx
 @Slf4j
 public class WarehouseExportController {
     private final WarehouseExportService warehouseExportService;
+
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ApiResponse<Void>> createImport(@RequestBody @Validated CreateWarehouseExport warehouseExport) {
+    public ResponseEntity<ApiResponse<Void>> createExport(@RequestBody @Validated CreateWarehouseExport warehouseExport) {
         this.warehouseExportService.createWarehouseExport(warehouseExport);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.CREATED, "Create export"), HttpStatus.CREATED);
     }
 
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<Void>> updateExport(@PathVariable("id") Long id, @RequestBody @Validated CreateWarehouseExport warehouseExport) {
+        this.warehouseExportService.updateWarehouseExport(id, warehouseExport);
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Create export"), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<Void>> deleteExport(@PathVariable("id") Long id) {
+        warehouseExportService.deleteExport(id);
+        return new ResponseEntity<>(
+                ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Deleted"), HttpStatus.OK);
+    }
 }

@@ -8,7 +8,6 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.BaseEntity;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Product;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
 
 @Getter
 @Setter
@@ -34,7 +33,7 @@ public class WarehouseImportDetail extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_inport_id", insertable = false, updatable = false)
-    private WarehouseImport warehouseImport; //id đơn nhập
+    private WarehouseExport warehouseImport; //id đơn nhập
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", insertable = false, updatable = false)

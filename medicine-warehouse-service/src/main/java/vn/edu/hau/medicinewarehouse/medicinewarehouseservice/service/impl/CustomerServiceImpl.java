@@ -10,11 +10,15 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.UpdateCustomerDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CustomerRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.CustomerService;
 
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> implements CustomerService {
@@ -96,5 +100,21 @@ public class CustomerServiceImpl extends BaseServiceImpl<Customer, Long> impleme
         Customer customer = this.customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Not found customer with id = " + id));
         customer.setDeleted(true);
         this.customerRepository.save(customer);
+    }
+
+    @Override
+    public List<CustomerDetailDto> findAll() {
+        return customerRepository.findAll()
+                .stream()
+                .map(haha -> new CustomerDetailDto(
+                        haha.getId(),
+                        haha.getFullName(),
+                        haha.getPhone(),
+                        haha.getEmail(),
+                        haha.getAddress(),
+                        haha.getNote()
+                ))
+                .sorted(Comparator.comparing(CustomerDetailDto::getFullName)) // Sắp xếp sau khi chuyển đổi
+                .collect(Collectors.toList());
     }
 }
