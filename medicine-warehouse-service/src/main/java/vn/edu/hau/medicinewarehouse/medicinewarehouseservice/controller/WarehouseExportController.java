@@ -6,13 +6,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponse;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseCode;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseGenerator;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.CreateWarehouseExport;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.ResponseWarehouseExportDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.UpdateWarehouseExportDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.WarehouseExportFilter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.ResponseWarehouseImportDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.WarehouseImportFilter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.WarehouseExportService;
 
 @RestController
@@ -49,5 +52,12 @@ public class WarehouseExportController {
     public ResponseEntity<ApiResponse<ResponseWarehouseExportDto>> getWarehouseExport(@PathVariable("id") Long id) {
         ResponseWarehouseExportDto responseWarehouseExportDto = this.warehouseExportService.detailExport(id);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Get Detail Success", responseWarehouseExportDto), HttpStatus.OK);
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<PageResponse<ResponseWarehouseExportDto>>> searchMedicalGroup(WarehouseExportFilter request) {
+        PageResponse<ResponseWarehouseExportDto> list = this.warehouseExportService.getListWarehouseExport(request);
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Search list warehouse export", list), HttpStatus.OK);
     }
 }
