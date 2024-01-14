@@ -1,11 +1,22 @@
 package vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.impl;
 
+import jakarta.annotation.Nonnull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponse;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponseConverter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.CreateWarehouseExport;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.CreateWarehouseExportDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.*;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.ResponseWarehouseImportDetailDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.ResponseWarehouseImportDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.WarehouseImportFilter;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExportDetail;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImportDetail;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CustomerRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.ProductRepository;
@@ -13,6 +24,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.Warehous
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.WarehouseExportRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.WarehouseExportService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +48,7 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
         }
         customerRepository.findById(createExport.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng có id = " + createExport.getCustomerId()));
         vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport export = new vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport();
+        export.setCode(createExport.getCode());
         export.setNote(createExport.getNote());
         export.setCustomerId(createExport.getCustomerId());
         vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport warehouseExport = this.warehouseExportRepository.save(export);
@@ -47,24 +60,20 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
     }
 
     @Override
-    public void updateWarehouseExport(Long exportId, CreateWarehouseExport warehouseExport) {
+    @Transactional
+    public void updateWarehouseExport(Long exportId, UpdateWarehouseExportDto warehouseExport) {
         vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport existingExport = warehouseExportRepository.findById(exportId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn xuất kho với Id: " + exportId));
         customerRepository.findById(warehouseExport.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng có id = " + warehouseExport.getCustomerId()));
 
-        // Kiểm tra xem mã mới có trùng với mã của đơn nhập kho khác không
-        if (existingExport.getCode().equals(warehouseExport.getCode()) && warehouseExportRepository.existsByCode(warehouseExport.getCode())) {
-            throw new ResourceNotFoundException("Mã xuất kho đã tồn tại!");
-        }
 
         // Cập nhật thông tin của đơn nhập kho
-        existingExport.setCode(warehouseExport.getCode());
         existingExport.setNote(warehouseExport.getNote());
         existingExport.setCustomerId(warehouseExport.getCustomerId());
         vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport export = warehouseExportRepository.save(existingExport);
 
         // Xóa chi tiết cũ và thêm chi tiết mới
-        warehouseExportDetailRepository.deleteByWarehouseExportId(exportId);
+        warehouseExportDetailRepository.deleteAllByWarehouseExportId(exportId);
 
         List<CreateWarehouseExportDetailDto> detailDtos = warehouseExport.getCreateWarehouseExportDetailDtos();
         if (detailDtos != null && !detailDtos.isEmpty()) {
@@ -73,6 +82,7 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
     }
 
     @Override
+    @Transactional
     public void deleteExport(Long id) {
         WarehouseExport warehouseImport = this.warehouseExportRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy id nhập kho = " + id));
         warehouseImport.setDeleted(true);
@@ -84,7 +94,72 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
         }
     }
 
+    @Override
+    public ResponseWarehouseExportDto detailExport(Long idWarehouseExport) {
+        WarehouseExport warehouseExport = warehouseExportRepository.findById(idWarehouseExport).orElseThrow(() -> new ResourceNotFoundException("không tìm thấy id xuất kho = " + idWarehouseExport));
+        Customer customer = customerRepository.findById(warehouseExport.getCustomerId()).orElseThrow(()-> new ResourceNotFoundException("Không tìm thấy khách hàng có id = " + warehouseExport.getCustomerId()));
+
+        List<WarehouseExportDetail> warehouseExportDetails = warehouseExportDetailRepository.findAllByWarehouseExportId(idWarehouseExport);
+        List<ResponseWarehouseExportDetailDto> responseWarehouseExportDetailDtos = new ArrayList<>();
+        for (WarehouseExportDetail detail : warehouseExportDetails) {
+            ResponseWarehouseExportDetailDto dto = convertToResponseDto(detail);
+            responseWarehouseExportDetailDtos.add(dto);
+        }
+        return getResponseWarehouseExportDto(warehouseExport, responseWarehouseExportDetailDtos, customer);
+    }
+
+    @Override
+    public PageResponse<ResponseWarehouseExportDto> getListWarehouseExport(WarehouseExportFilter request) {
+        Pageable pageable = Pageable.ofSize(request.getPageSize()).withPage(request.getPageNumber() - 1);
+        Page<ResponseWarehouseExportDto> responseWarehouseExportDtos = this.warehouseExportRepository.searchWarehouseExport(request.getKeyword(), pageable)
+                .map(detail -> {
+
+                            List<WarehouseExportDetail> warehouseExportDetails = warehouseExportDetailRepository.findAllByWarehouseExportId(detail.getId());
+                            List<ResponseWarehouseExportDetailDto> responseWarehouseExportDetailDtos = new ArrayList<>();
+                            for (WarehouseExportDetail wow : warehouseExportDetails) {
+                                ResponseWarehouseExportDetailDto dto = convertToResponseDto(wow);
+                                responseWarehouseExportDetailDtos.add(dto);
+                            }
+                            Customer customer = customerRepository.findById(detail.getCustomerId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng có id = " + detail.getCustomerId()));
+                            return getResponseWarehouseExportDto(detail, responseWarehouseExportDetailDtos, customer);
+                        }
+                );
+        return PageResponseConverter.convert(responseWarehouseExportDtos);
+    }
+
+    @Nonnull
+    private ResponseWarehouseExportDto getResponseWarehouseExportDto(WarehouseExport detail, List<ResponseWarehouseExportDetailDto> responseWarehouseExportDetailDtos, Customer customer) {
+        CustomerDetailDto customerDetailDto = new CustomerDetailDto();
+        customerDetailDto.setNote(customerDetailDto.getNote());
+        customerDetailDto.setFullName(customer.getFullName());
+        customerDetailDto.setAddress(customer.getAddress());
+        customerDetailDto.setPhone(customer.getPhone());
+        customerDetailDto.setEmail(customer.getEmail());
+        customerDetailDto.setId(customer.getId());
+
+        return new ResponseWarehouseExportDto(
+                detail.getId(),
+                detail.getCode(),
+                detail.getNote(),
+                customerDetailDto,
+                responseWarehouseExportDetailDtos);
+    }
+
+
+    private ResponseWarehouseExportDetailDto convertToResponseDto(WarehouseExportDetail exportDetail) {
+        ResponseWarehouseExportDetailDto dto = new ResponseWarehouseExportDetailDto();
+
+        dto.setIdImportDetail(exportDetail.getWarehouseExportId());
+        dto.setProductName(exportDetail.getProduct().getName());
+        dto.setId(exportDetail.getProduct().getId());
+        dto.setQuantity(exportDetail.getQuantity());
+        dto.setPrice(exportDetail.getPrice());
+
+        return dto;
+    }
+
     private void createListExport(vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport warehouseExport, List<CreateWarehouseExportDetailDto> detailDtos) {
+        List<WarehouseExportDetail> warehouseExportDetails = new ArrayList<>();
         for (CreateWarehouseExportDetailDto detailDto : detailDtos) {
             WarehouseExportDetail detail = new WarehouseExportDetail();
             productRepository.findById(detailDto.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy product có id = " + detailDto.getProductId()));
@@ -92,7 +167,9 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
             detail.setProductId(detailDto.getProductId());
             detail.setQuantity(detailDto.getQuantity());
             detail.setPrice(detailDto.getPrice());
-            warehouseExportDetailRepository.save(detail);
+            warehouseExportDetails.add(detail);
         }
+        warehouseExportDetailRepository.saveAll(warehouseExportDetails);
+
     }
 }

@@ -10,6 +10,9 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.Api
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseCode;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.response.ApiResponseGenerator;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.CreateWarehouseExport;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.ResponseWarehouseExportDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.UpdateWarehouseExportDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.ResponseWarehouseImportDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.WarehouseExportService;
 
 @RestController
@@ -28,7 +31,7 @@ public class WarehouseExportController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse<Void>> updateExport(@PathVariable("id") Long id, @RequestBody @Validated CreateWarehouseExport warehouseExport) {
+    public ResponseEntity<ApiResponse<Void>> updateExport(@PathVariable("id") Long id, @RequestBody @Validated UpdateWarehouseExportDto warehouseExport) {
         this.warehouseExportService.updateWarehouseExport(id, warehouseExport);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Create export"), HttpStatus.OK);
     }
@@ -39,5 +42,12 @@ public class WarehouseExportController {
         warehouseExportService.deleteExport(id);
         return new ResponseEntity<>(
                 ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Deleted"), HttpStatus.OK);
+    }
+
+    @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ApiResponse<ResponseWarehouseExportDto>> getWarehouseExport(@PathVariable("id") Long id) {
+        ResponseWarehouseExportDto responseWarehouseExportDto = this.warehouseExportService.detailExport(id);
+        return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Get Detail Success", responseWarehouseExportDto), HttpStatus.OK);
     }
 }

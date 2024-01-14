@@ -48,7 +48,7 @@ public class WarehouseExport extends BaseEntity {
     @JoinColumn(name = "customer_id", updatable = false, insertable = false)
     private Customer customer;
 
-    @OneToMany(fetch = FetchType.LAZY,
-            mappedBy = "warehouseExport")
-    private Set<WarehouseExportDetail> warehouseExportDetails = new HashSet<WarehouseExportDetail>();
+//    @OneToMany(fetch = FetchType.LAZY,
+//            mappedBy = "warehouseExport")
+//    private Set<WarehouseExportDetail> warehouseExportDetails = new HashSet<WarehouseExportDetail>();
 }

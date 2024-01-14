@@ -6,7 +6,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.wareho
 import java.util.List;
 
 public interface WarehouseImportDetailRepository extends JpaRepository<WarehouseImportDetail, Long> {
-    void deleteByWarehouseImportId(Long warehouseImportId);
+    void deleteAllByWarehouseImportId(Long warehouseImportId);
 
     List<WarehouseImportDetail> findAllByWarehouseImportId(Long id);
 }

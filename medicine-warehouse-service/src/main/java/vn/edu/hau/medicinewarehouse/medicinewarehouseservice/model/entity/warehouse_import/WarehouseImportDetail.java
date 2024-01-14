@@ -33,7 +33,7 @@ public class WarehouseImportDetail extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "warehouse_inport_id", insertable = false, updatable = false)
-    private WarehouseExport warehouseImport; //id đơn nhập
+    private WarehouseImport warehouseImport; //id đơn nhập
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", insertable = false, updatable = false)
