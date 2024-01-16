@@ -90,6 +90,10 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
             ResponseWarehouseImportDetailDto dto = convertToResponseDto(detail);
             responseWarehouseImportDetailDtos.add(dto);
         }
+        Double totalPrice = warehouseImport.getTotalPrice();
+        if (totalPrice == null) {
+            totalPrice = 0.0;
+        }
 
         return new ResponseWarehouseImportDto(
                 warehouseImport.getId(),
@@ -97,7 +101,8 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
                 warehouseImport.getNote(),
                 warehouseImport.getSupplier().getId(),
                 warehouseImport.getSupplier().getFullName(),
-                responseWarehouseImportDetailDtos
+                responseWarehouseImportDetailDtos,
+                totalPrice
         );
     }
 
@@ -113,14 +118,19 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
                                 ResponseWarehouseImportDetailDto dto = convertToResponseDto(wow);
                                 responseWarehouseImportDetailDtos.add(dto);
                             }
-
+                            Double totalPrice = detail.getTotalPrice();
+                            if(totalPrice == null){
+                                totalPrice = 0.0;
+                            }
                             return new ResponseWarehouseImportDto(
                                     detail.getId(),
                                     detail.getCode(),
                                     detail.getNote(),
                                     detail.getSupplier().getId(),
                                     detail.getSupplier().getFullName(),
-                                    responseWarehouseImportDetailDtos);
+                                    responseWarehouseImportDetailDtos,
+                                    totalPrice
+                            );
                         }
                 );
         return PageResponseConverter.convert(responseWarehouseImportDtos);

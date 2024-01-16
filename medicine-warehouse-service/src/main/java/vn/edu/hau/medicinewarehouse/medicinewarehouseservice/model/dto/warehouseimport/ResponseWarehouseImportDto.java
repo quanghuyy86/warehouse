@@ -19,5 +19,7 @@ public class ResponseWarehouseImportDto {
     private Long supplierId;
     private String supplierName;
     private List<ResponseWarehouseImportDetailDto> detailImport = new ArrayList<>();
+    private double totalPrice;
+
 
 }

@@ -10,14 +10,9 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.Pag
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.customer.CustomerDetailDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseexport.*;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.ResponseWarehouseImportDetailDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.ResponseWarehouseImportDto;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.WarehouseImportFilter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExportDetail;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
-import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImportDetail;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.CustomerRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.ProductRepository;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.WarehouseExportDetailRepository;
@@ -137,12 +132,19 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
         customerDetailDto.setEmail(customer.getEmail());
         customerDetailDto.setId(customer.getId());
 
+        Double totalPrice = detail.getTotalPrice();
+        if(totalPrice == null){
+            totalPrice = 0.0;
+        }
+
         return new ResponseWarehouseExportDto(
                 detail.getId(),
                 detail.getCode(),
                 detail.getNote(),
                 customerDetailDto,
-                responseWarehouseExportDetailDtos);
+                responseWarehouseExportDetailDtos,
+                totalPrice
+        );
     }
 
 
