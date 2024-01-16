@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.BaseEntity;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Customer;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.user.User;
@@ -20,6 +21,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_warehouse_export")
+@Where(clause = "is_delete = 0")
 public class WarehouseExport extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

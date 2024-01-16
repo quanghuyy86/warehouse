@@ -20,6 +20,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.WarehouseIm
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WarehouseImportServiceImpl implements WarehouseImportService {
@@ -56,18 +57,13 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
 
     @Transactional
     @Override
-    public void updateWarehouseImport(Long importId, CreateWarehouseImportDto importDto) {
+    public void updateWarehouseImport(Long importId, UpdateWarehouseImportDto importDto) {
         WarehouseImport existingImport = importRepository.findById(importId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn nhập kho với ID: " + importId));
         supplierRepository.findById(importDto.getSupplierId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy nhà cung cấp có id = " + importDto.getSupplierId()));
 
-        // Kiểm tra xem mã mới có trùng với mã của đơn nhập kho khác không
-        if (existingImport.getCode().equals(importDto.getCode()) && importRepository.existsByCode(importDto.getCode())) {
-            throw new ResourceNotFoundException("Mã nhập kho đã tồn tại!");
-        }
 
         // Cập nhật thông tin của đơn nhập kho
-        existingImport.setCode(importDto.getCode());
         existingImport.setNote(importDto.getNote());
         existingImport.setSupplierId(importDto.getSupplierId());
         WarehouseImport updatedImport = importRepository.save(existingImport);
@@ -90,10 +86,7 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
             ResponseWarehouseImportDetailDto dto = convertToResponseDto(detail);
             responseWarehouseImportDetailDtos.add(dto);
         }
-        Double totalPrice = warehouseImport.getTotalPrice();
-        if (totalPrice == null) {
-            totalPrice = 0.0;
-        }
+        Double totalPrice = Optional.of(warehouseImport.getTotalPrice()).orElse(0.0);
 
         return new ResponseWarehouseImportDto(
                 warehouseImport.getId(),
@@ -118,10 +111,7 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
                                 ResponseWarehouseImportDetailDto dto = convertToResponseDto(wow);
                                 responseWarehouseImportDetailDtos.add(dto);
                             }
-                            Double totalPrice = detail.getTotalPrice();
-                            if(totalPrice == null){
-                                totalPrice = 0.0;
-                            }
+                    Double totalPrice = Optional.of(detail.getTotalPrice()).orElse(0.0);
                             return new ResponseWarehouseImportDto(
                                     detail.getId(),
                                     detail.getCode(),

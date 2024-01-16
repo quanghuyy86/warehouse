@@ -15,6 +15,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.supplier.SupplierParamFilterDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.CreateWarehouseImportDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.ResponseWarehouseImportDto;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.UpdateWarehouseImportDto;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.WarehouseImportFilter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.WarehouseImportService;
 
@@ -34,7 +35,7 @@ public class WarehouseImportController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ApiResponse<Void>> updateImport(@PathVariable("id") Long id,@RequestBody @Validated CreateWarehouseImportDto createWarehouseImportDto) {
+    public ResponseEntity<ApiResponse<Void>> updateImport(@PathVariable("id") Long id,@RequestBody @Validated UpdateWarehouseImportDto createWarehouseImportDto) {
         this.warehouseImportService.updateWarehouseImport(id,createWarehouseImportDto);
         return new ResponseEntity<>(ApiResponseGenerator.success(ApiResponseCode.SUCCESS, "Create import"), HttpStatus.OK);
     }

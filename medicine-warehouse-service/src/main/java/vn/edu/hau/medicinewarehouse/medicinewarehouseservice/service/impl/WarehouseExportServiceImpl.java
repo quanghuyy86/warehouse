@@ -21,6 +21,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.service.WarehouseEx
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WarehouseExportServiceImpl implements WarehouseExportService {
@@ -125,17 +126,14 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
     @Nonnull
     private ResponseWarehouseExportDto getResponseWarehouseExportDto(WarehouseExport detail, List<ResponseWarehouseExportDetailDto> responseWarehouseExportDetailDtos, Customer customer) {
         CustomerDetailDto customerDetailDto = new CustomerDetailDto();
-        customerDetailDto.setNote(customerDetailDto.getNote());
+        customerDetailDto.setNote(customer.getNote());
         customerDetailDto.setFullName(customer.getFullName());
         customerDetailDto.setAddress(customer.getAddress());
         customerDetailDto.setPhone(customer.getPhone());
         customerDetailDto.setEmail(customer.getEmail());
         customerDetailDto.setId(customer.getId());
 
-        Double totalPrice = detail.getTotalPrice();
-        if(totalPrice == null){
-            totalPrice = 0.0;
-        }
+        Double totalPrice = Optional.of(detail.getTotalPrice()).orElse(0.0);
 
         return new ResponseWarehouseExportDto(
                 detail.getId(),
