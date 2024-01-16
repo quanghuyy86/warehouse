@@ -8,6 +8,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.Pag
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.common.dto.page.PageResponseConverter;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.exception.ResourceNotFoundException;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.dto.warehouseimport.*;
+import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExportDetail;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImport;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_import.WarehouseImportDetail;
 import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.repository.ProductRepository;
@@ -152,6 +153,8 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
     }
 
     private void createListImport(WarehouseImport updatedImport, List<CreateWarehouseImportDetailDto> detailDtos) {
+        List<WarehouseImportDetail> warehouseImportDetails = new ArrayList<>();
+        double totalPrice = 0;
         for (CreateWarehouseImportDetailDto detailDto : detailDtos) {
             WarehouseImportDetail detail = new WarehouseImportDetail();
             productRepository.findById(detailDto.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy product có id = " + detailDto.getProductId()));
@@ -159,8 +162,12 @@ public class WarehouseImportServiceImpl implements WarehouseImportService {
             detail.setProductId(detailDto.getProductId());
             detail.setQuantity(detailDto.getQuantity());
             detail.setPrice(detailDto.getPrice());
-            importDetailRepository.save(detail);
+            double productTotalPrice = detailDto.getQuantity() * detailDto.getPrice();
+            totalPrice += productTotalPrice;
+            warehouseImportDetails.add(detail);
         }
+        updatedImport.setTotalPrice(totalPrice);
+        importDetailRepository.saveAll(warehouseImportDetails);
     }
 
 }

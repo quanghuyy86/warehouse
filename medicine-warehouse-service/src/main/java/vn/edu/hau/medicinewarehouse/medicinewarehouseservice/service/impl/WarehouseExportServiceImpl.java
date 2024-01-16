@@ -158,8 +158,9 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
         return dto;
     }
 
-    private void createListExport(vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.warehouse_export.WarehouseExport warehouseExport, List<CreateWarehouseExportDetailDto> detailDtos) {
+    private void createListExport(WarehouseExport warehouseExport, List<CreateWarehouseExportDetailDto> detailDtos) {
         List<WarehouseExportDetail> warehouseExportDetails = new ArrayList<>();
+        double totalPrice = 0;
         for (CreateWarehouseExportDetailDto detailDto : detailDtos) {
             WarehouseExportDetail detail = new WarehouseExportDetail();
             productRepository.findById(detailDto.getProductId()).orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy product có id = " + detailDto.getProductId()));
@@ -167,8 +168,11 @@ public class WarehouseExportServiceImpl implements WarehouseExportService {
             detail.setProductId(detailDto.getProductId());
             detail.setQuantity(detailDto.getQuantity());
             detail.setPrice(detailDto.getPrice());
+            double productTotalPrice = detailDto.getQuantity() * detailDto.getPrice();
+            totalPrice += productTotalPrice;
             warehouseExportDetails.add(detail);
         }
+        warehouseExport.setTotalPrice(totalPrice);
         warehouseExportDetailRepository.saveAll(warehouseExportDetails);
 
     }

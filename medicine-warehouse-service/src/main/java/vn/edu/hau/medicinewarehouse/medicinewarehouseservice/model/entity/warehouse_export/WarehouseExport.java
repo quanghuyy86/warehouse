@@ -44,9 +44,13 @@ public class WarehouseExport extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column(name = "total_price")
+    private double totalPrice;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", updatable = false, insertable = false)
     private Customer customer;
+
 
 //    @OneToMany(fetch = FetchType.LAZY,
 //            mappedBy = "warehouseExport")

@@ -29,5 +29,4 @@ public class CreateWarehouseImportDto {
     @NotNull(message = "Bắt buộc thêm sản phẩm")
     private List<CreateWarehouseImportDetailDto> createWarehouseImportDetailDto = new ArrayList<>();
 
-    private Double totalPrice;
 }
