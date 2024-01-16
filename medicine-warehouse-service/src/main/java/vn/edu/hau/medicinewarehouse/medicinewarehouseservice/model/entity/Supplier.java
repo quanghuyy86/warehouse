@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Setter
 @Getter
@@ -12,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_supplier")
+@Where(clause = "is_delete = 0")
 public class Supplier extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -14,6 +14,6 @@ public interface WarehouseExportRepository extends JpaRepository<WarehouseExport
     Boolean existsByCode(String code);
 
     @Query("SELECT s FROM WarehouseExport s WHERE " +
-            "(:keyword IS NULL OR s.code LIKE %:keyword%)")
+            "(:keyword IS NULL OR s.code LIKE %:keyword%) ORDER BY s.createdAt DESC")
     Page<WarehouseExport> searchWarehouseExport(@Param("keyword") String keyword, Pageable pageable);
 }

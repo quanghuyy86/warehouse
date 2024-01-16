@@ -12,7 +12,7 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
     @Query("SELECT s FROM Supplier s WHERE " +
             "(:name IS NULL OR s.fullName LIKE %:name% ) " +
             "AND (:phone IS NULL OR s.phone LIKE %:phone%) " +
-            "AND (:email IS NULL OR s.email LIKE %:email%) AND s.isDeleted = false")
+            "AND (:email IS NULL OR s.email LIKE %:email%) ORDER BY s.createdAt DESC")
     Page<Supplier> searchSuppliers(@Param("name") String name, @Param("phone") String phone, @Param("email") String email, Pageable pageable);
     boolean existsByFullName(String fullName);
 }

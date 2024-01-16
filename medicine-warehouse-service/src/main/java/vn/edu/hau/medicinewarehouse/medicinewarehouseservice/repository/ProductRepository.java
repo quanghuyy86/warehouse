@@ -10,7 +10,7 @@ import vn.edu.hau.medicinewarehouse.medicinewarehouseservice.model.entity.Produc
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT s FROM Product s WHERE " +
             "(:keyword IS NULL OR s.name LIKE %:keyword% ) " +
-            "AND (:categoryId IS NULL OR s.categoryId = :categoryId) AND s.isDeleted = false")
+            "AND (:categoryId IS NULL OR s.categoryId = :categoryId) ORDER BY s.createdAt DESC")
     Page<Product> searchProduct(@Param("keyword") String keyword,@Param("categoryId") Long categoryId, Pageable pageable);
 
     Boolean existsByName(String name);
